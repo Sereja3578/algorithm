@@ -1,6 +1,49 @@
-assets/*
-!assets/.gitignore
-protected/runtime/*
-!protected/runtime/.gitignore
-protected/data/*.db
-themes/classic/views/
+# yii console command
+/yii
+
+# phpstorm project files
+.idea
+
+# netbeans project files
+nbproject
+
+# zend studio for eclipse project files
+.buildpath
+.project
+.settings
+
+# windows thumbnail cache
+Thumbs.db
+
+# composer vendor dir
+/vendor
+
+# composer itself is not needed
+composer.phar
+build.composer.lock
+
+# Mac DS_Store Files
+.DS_Store
+
+# phpunit itself is not needed
+phpunit.phar
+# local phpunit config
+/phpunit.xml
+
+# local configs
+main-local.php
+params-local.php
+test-local.php
+mfd.ini
+prime-config.php
+
+# entry points
+*/web/index.php
+*/web/index-test.php
+
+# api
+api/web/docs
+api/web/assets
+
+# MySQL Workbench backups
+console/migrations/data/*.mwb.bak
