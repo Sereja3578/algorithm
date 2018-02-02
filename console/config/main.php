@@ -20,6 +20,16 @@ return [
             'class' => 'yii\console\controllers\FixtureController',
             'namespace' => 'common\fixtures',
           ],
+        'message' => [
+            'class' => 'console\controllers\MessageController',
+            'sourcePathMap' => [
+                '@backend' => [],
+                '@common' => [],
+                '@console' => [],
+                '@frontend' => [],
+                '@vendor' => []
+            ]
+        ],
     ],
     'components' => [
         'log' => [
