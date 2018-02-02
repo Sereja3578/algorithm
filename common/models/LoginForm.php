@@ -75,4 +75,18 @@ class LoginForm extends Model
 
         return $this->_user;
     }
+
+    public function attributeLabels()
+    {
+        return array_merge(parent::attributeLabels(), [
+            'username' => Yii::t('models', 'Логин'),
+            'password' => Yii::t('models', 'Пароль'),
+            'rememberMe' => Yii::t('models', 'Запомнить меня'),
+        ]);
+    }
+
+    public function getFormTitle()
+    {
+        return Yii::t('models', 'Вход');
+    }
 }
