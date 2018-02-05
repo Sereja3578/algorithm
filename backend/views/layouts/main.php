@@ -39,7 +39,7 @@ AppAsset::register($this);
         ['label' => Yii::t('main', 'Домой'), 'url' => ['/site/index']],
     ];
     if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => Yii::t('main', 'Вход'), 'url' => ['/site/login']];
+        $menuItems[] = ['label' => Yii::t('main', 'Вход'), 'url' => ['user/login']];
     } else {
         $menuItems[] = '<li>'
             . Html::beginForm(['/site/logout'], 'post')
