@@ -1,0 +1,18 @@
+
+DIR=$(dirname $0)
+
+### models ##############################
+
+MODELS_BASE_OPTIONS='
+    --excludeFilter=migration|cache|source_message|message|log|\w+_log|auth_\w+|log_table
+    --baseClass=common\components\ActiveRecord
+    --queryBaseClass=common\components\ActiveQuery
+    --enableI18N=1
+    --messageCategory=models'
+
+$DIR/yii gii/base_model --interactive=0 $MODELS_BASE_OPTIONS
+$DIR/yii gii/custom_model --interactive=0
+$DIR/yii gii/base_model --interactive=0 --overwrite=1 $MODELS_BASE_OPTIONS
+$DIR/yii gii/base_model --interactive=0 --overwrite=1 $MODELS_BASE_OPTIONS
+$DIR/yii gii/fixture --interactive=0 --generateDataFile=1
+$DIR/yii gii/fixture --interactive=0 --overwrite=1

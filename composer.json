@@ -22,10 +22,11 @@
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",
-        "yiisoft/yii2-gii": "~2.0.0",
+        "yiisoft/yii2-gii": "2.0.5",
         "yiisoft/yii2-faker": "~2.0.0",
         "codeception/base": "^2.2.3",
-        "codeception/verify": "~0.3.1"
+        "codeception/verify": "~0.3.1",
+        "ivan-chkv/yii2-gii-plus": "@dev"
     },
     "config": {
         "process-timeout": 1800

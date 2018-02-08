@@ -1,6 +1,7 @@
 <?php
-namespace frontend\models;
+namespace common\forms;
 
+use common\models\Admin;
 use Yii;
 use yii\base\Model;
 use common\models\User;
@@ -8,10 +9,9 @@ use common\models\User;
 /**
  * Password reset request form
  */
-class PasswordResetRequestForm extends Model
+class PasswordResetRequestForm extends BaseForm
 {
     public $email;
-
 
     /**
      * @inheritdoc
@@ -22,12 +22,18 @@ class PasswordResetRequestForm extends Model
             ['email', 'trim'],
             ['email', 'required'],
             ['email', 'email'],
-            ['email', 'exist',
-                'targetClass' => '\common\models\User',
-                'filter' => ['status' => User::STATUS_ACTIVE],
+            ['email', 'emailValidation',
                 'message' => 'There is no user with this email address.'
             ],
         ];
+    }
+
+    public function emailValidation($email)
+    {
+        $user = ($this->scenario == 'user_action') ?
+            User::findOne(['email' => $this->email, 'status' => User::STATUS_ACTIVE]) :
+            Admin::findOne(['email' => $this->email, 'status' => Admin::STATUS_ACTIVE]);
+        return $user ? true : false;
     }
 
     /**
@@ -37,11 +43,19 @@ class PasswordResetRequestForm extends Model
      */
     public function sendEmail()
     {
-        /* @var $user User */
-        $user = User::findOne([
-            'status' => User::STATUS_ACTIVE,
-            'email' => $this->email,
-        ]);
+        if($this->scenario == 'user_action') {
+            /* @var $user User */
+            $user = User::findOne([
+                'status' => User::STATUS_ACTIVE,
+                'email' => $this->email,
+            ]);
+        } else {
+            /* @var $user Admin */
+            $user = Admin::findOne([
+                'status' => Admin::STATUS_ACTIVE,
+                'email' => $this->email,
+            ]);
+        }
 
         if (!$user) {
             return false;
@@ -64,5 +78,13 @@ class PasswordResetRequestForm extends Model
             ->setTo($this->email)
             ->setSubject('Password reset for ' . Yii::$app->name)
             ->send();
+    }
+
+    /**
+     * @return string
+     */
+    public function getFormTitle()
+    {
+        return Yii::t('models', 'Запросить восстановление пароля');
     }
 }

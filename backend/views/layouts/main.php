@@ -39,10 +39,10 @@ AppAsset::register($this);
         ['label' => Yii::t('main', 'Домой'), 'url' => ['/site/index']],
     ];
     if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => Yii::t('main', 'Вход'), 'url' => ['user/login']];
+        $menuItems[] = ['label' => Yii::t('main', 'Вход'), 'url' => ['auth/login']];
     } else {
         $menuItems[] = '<li>'
-            . Html::beginForm(['/site/logout'], 'post')
+            . Html::beginForm(['auth/logout'], 'post')
             . Html::submitButton(
                 Yii::t('main' , 'Выход') . ' (' . Yii::$app->user->identity->username . ')',
                 ['class' => 'btn btn-link logout']

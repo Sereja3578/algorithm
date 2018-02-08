@@ -31,6 +31,9 @@ return [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
+        'authManager' => [
+            'class' => 'yii\rbac\DbManager'
+        ]
     ],
     // set target language to be Russian
     'language' => 'ru',

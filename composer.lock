@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "9c0de8d2e2e8071cbdc71fef3a6800d1",
+    "content-hash": "811c014465df12f4778b673c12e299f0",
     "packages": [
         {
             "name": "bower-asset/bootstrap",
@@ -729,6 +729,28 @@
             "time": "2016-10-30T11:50:56+00:00"
         },
         {
+            "name": "bower-asset/jquery-ui",
+            "version": "1.12.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/components/jqueryui.git",
+                "reference": "44ecf3794cc56b65954cc19737234a3119d036cc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/components/jqueryui/zipball/44ecf3794cc56b65954cc19737234a3119d036cc",
+                "reference": "44ecf3794cc56b65954cc19737234a3119d036cc",
+                "shasum": null
+            },
+            "require": {
+                "bower-asset/jquery": ">=1.6"
+            },
+            "type": "bower-asset",
+            "license": [
+                "MIT"
+            ]
+        },
+        {
             "name": "bower-asset/typeahead.js",
             "version": "v0.11.1",
             "source": {
@@ -963,6 +985,42 @@
             "time": "2017-07-22T11:58:36+00:00"
         },
         {
+            "name": "firephp/firephp-core",
+            "version": "v0.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/firephp/firephp-core.git",
+                "reference": "fabad0f2503f9577fe8dd2cb1d1c7cd73ed2aacf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/firephp/firephp-core/zipball/fabad0f2503f9577fe8dd2cb1d1c7cd73ed2aacf",
+                "reference": "fabad0f2503f9577fe8dd2cb1d1c7cd73ed2aacf",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "lib/FirePHPCore/FirePHP.class.php",
+                    "lib/FirePHPCore/fb.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christoph Dorn",
+                    "email": "christoph@christophdorn.com",
+                    "homepage": "http://christophdorn.com"
+                }
+            ],
+            "description": "Traditional FirePHPCore library for sending PHP variables to the browser.",
+            "homepage": "https://github.com/firephp/firephp-core",
+            "time": "2013-04-23T15:28:20+00:00"
+        },
+        {
             "name": "fzaninotto/faker",
             "version": "v1.7.1",
             "source": {
@@ -1076,6 +1134,166 @@
                 "url"
             ],
             "time": "2017-03-20T17:10:46+00:00"
+        },
+        {
+            "name": "ivan-chkv/yii2-boost",
+            "version": "1.0.41",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ivan-chkv/yii2-boost.git",
+                "reference": "5bab22e91eb5900230732d9fd4783a140e45f4ed"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ivan-chkv/yii2-boost/zipball/5bab22e91eb5900230732d9fd4783a140e45f4ed",
+                "reference": "5bab22e91eb5900230732d9fd4783a140e45f4ed",
+                "shasum": ""
+            },
+            "require": {
+                "firephp/firephp-core": "*",
+                "psr/log": "*",
+                "yiisoft/yii2": ">=2.0.4"
+            },
+            "require-dev": {
+                "ivan-chkv/yii2-phpunit": "2.*"
+            },
+            "type": "yii2-extension",
+            "extra": {
+                "asset-installer-paths": {
+                    "npm-asset-library": "vendor/npm",
+                    "bower-asset-library": "vendor/bower"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "yii\\boost\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ivan Chistyakov",
+                    "email": "ivan.chkv@gmail.com"
+                }
+            ],
+            "description": "Yii 2 Boost Extension",
+            "keywords": [
+                "boost",
+                "yii2"
+            ],
+            "time": "2016-10-12T13:40:44+00:00"
+        },
+        {
+            "name": "ivan-chkv/yii2-gii-plus",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ivan-chkv/yii2-gii-plus.git",
+                "reference": "b2adbb1c0d317520bdac0e25971b9f3da4f3dc08"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ivan-chkv/yii2-gii-plus/zipball/b2adbb1c0d317520bdac0e25971b9f3da4f3dc08",
+                "reference": "b2adbb1c0d317520bdac0e25971b9f3da4f3dc08",
+                "shasum": ""
+            },
+            "require": {
+                "ivan-chkv/yii2-boost": "*",
+                "ivan-chkv/yii2-jui-autocomplete": "*",
+                "yiisoft/yii2": ">=2.0.4",
+                "yiisoft/yii2-gii": "2.0.5"
+            },
+            "require-dev": {
+                "ivan-chkv/yii2-phpunit": "2.*"
+            },
+            "suggest": {
+                "ivan-chkv/yii2-boost": "Yii 2 Boost Extension"
+            },
+            "type": "yii2-extension",
+            "extra": {
+                "asset-installer-paths": {
+                    "npm-asset-library": "vendor/npm",
+                    "bower-asset-library": "vendor/bower"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "yii\\gii\\plus\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ivan Chistyakov",
+                    "email": "ivan.chkv@gmail.com"
+                }
+            ],
+            "description": "Yii 2 Gii Plus Extension",
+            "keywords": [
+                "code generator",
+                "gii",
+                "yii2"
+            ],
+            "time": "2016-11-30T09:32:32+00:00"
+        },
+        {
+            "name": "ivan-chkv/yii2-jui-autocomplete",
+            "version": "2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ivan-chkv/yii2-jui-autocomplete.git",
+                "reference": "14e9c406fc42cec10b1eedb3accfa61dcabc22c9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ivan-chkv/yii2-jui-autocomplete/zipball/14e9c406fc42cec10b1eedb3accfa61dcabc22c9",
+                "reference": "14e9c406fc42cec10b1eedb3accfa61dcabc22c9",
+                "shasum": ""
+            },
+            "require": {
+                "yiisoft/yii2": ">=2.0.4",
+                "yiisoft/yii2-jui": "2.*"
+            },
+            "require-dev": {
+                "ivan-chkv/yii2-phpunit": "2.*"
+            },
+            "type": "yii2-extension",
+            "extra": {
+                "asset-installer-paths": {
+                    "npm-asset-library": "vendor/npm",
+                    "bower-asset-library": "vendor/bower"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "yii\\jui\\autosearch\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ivan Chistyakov",
+                    "email": "ivan.chkv@gmail.com"
+                }
+            ],
+            "description": "Yii 2 jQuery UI AutoComplete Widget",
+            "homepage": "http://jqueryui.com/autocomplete/",
+            "keywords": [
+                "autocomplete",
+                "jquery",
+                "jquery-ui",
+                "yii2"
+            ],
+            "time": "2016-07-14T20:44:32+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -1728,16 +1946,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "6.5.5",
+            "version": "6.5.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "83d27937a310f2984fd575686138597147bdc7df"
+                "reference": "3330ef26ade05359d006041316ed0fa9e8e3cefe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/83d27937a310f2984fd575686138597147bdc7df",
-                "reference": "83d27937a310f2984fd575686138597147bdc7df",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/3330ef26ade05359d006041316ed0fa9e8e3cefe",
+                "reference": "3330ef26ade05359d006041316ed0fa9e8e3cefe",
                 "shasum": ""
             },
             "require": {
@@ -1808,7 +2026,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2017-12-17T06:31:19+00:00"
+            "time": "2018-02-01T05:57:37+00:00"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -1920,6 +2138,53 @@
             "time": "2016-08-06T14:39:51+00:00"
         },
         {
+            "name": "psr/log",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/log.git",
+                "reference": "4ebe3a8bf773a19edfe0a84b6585ba3d401b724d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/4ebe3a8bf773a19edfe0a84b6585ba3d401b724d",
+                "reference": "4ebe3a8bf773a19edfe0a84b6585ba3d401b724d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Log\\": "Psr/Log/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for logging libraries",
+            "homepage": "https://github.com/php-fig/log",
+            "keywords": [
+                "log",
+                "psr",
+                "psr-3"
+            ],
+            "time": "2016-10-10T12:19:37+00:00"
+        },
+        {
             "name": "sebastian/code-unit-reverse-lookup",
             "version": "1.0.1",
             "source": {
@@ -1966,21 +2231,21 @@
         },
         {
             "name": "sebastian/comparator",
-            "version": "2.1.2",
+            "version": "2.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/comparator.git",
-                "reference": "11c07feade1d65453e06df3b3b90171d6d982087"
+                "reference": "34369daee48eafb2651bea869b4b15d75ccc35f9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/comparator/zipball/11c07feade1d65453e06df3b3b90171d6d982087",
-                "reference": "11c07feade1d65453e06df3b3b90171d6d982087",
+                "url": "https://api.github.com/repos/sebastianbergmann/comparator/zipball/34369daee48eafb2651bea869b4b15d75ccc35f9",
+                "reference": "34369daee48eafb2651bea869b4b15d75ccc35f9",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.0",
-                "sebastian/diff": "^2.0",
+                "sebastian/diff": "^2.0 || ^3.0",
                 "sebastian/exporter": "^3.1"
             },
             "require-dev": {
@@ -2026,7 +2291,7 @@
                 "compare",
                 "equality"
             ],
-            "time": "2018-01-12T06:34:42+00:00"
+            "time": "2018-02-01T13:46:46+00:00"
         },
         {
             "name": "sebastian/diff",
@@ -2826,16 +3091,16 @@
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.6.0",
+            "version": "v1.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "2ec8b39c38cb16674bbf3fea2b6ce5bf117e1296"
+                "reference": "78be803ce01e55d3491c1397cf1c64beb9c1b63b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/2ec8b39c38cb16674bbf3fea2b6ce5bf117e1296",
-                "reference": "2ec8b39c38cb16674bbf3fea2b6ce5bf117e1296",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/78be803ce01e55d3491c1397cf1c64beb9c1b63b",
+                "reference": "78be803ce01e55d3491c1397cf1c64beb9c1b63b",
                 "shasum": ""
             },
             "require": {
@@ -2847,7 +3112,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.6-dev"
+                    "dev-master": "1.7-dev"
                 }
             },
             "autoload": {
@@ -2881,7 +3146,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2017-10-11T12:05:26+00:00"
+            "time": "2018-01-30T19:27:44+00:00"
         },
         {
             "name": "symfony/yaml",
@@ -3127,23 +3392,23 @@
         },
         {
             "name": "yiisoft/yii2-gii",
-            "version": "2.0.6",
+            "version": "2.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-gii.git",
-                "reference": "db41f647d9b73702ceb6864fdfce827a72b5ce42"
+                "reference": "1bd6df6804ca077ec022587905a0d43eb286f507"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-gii/zipball/db41f647d9b73702ceb6864fdfce827a72b5ce42",
-                "reference": "db41f647d9b73702ceb6864fdfce827a72b5ce42",
+                "url": "https://api.github.com/repos/yiisoft/yii2-gii/zipball/1bd6df6804ca077ec022587905a0d43eb286f507",
+                "reference": "1bd6df6804ca077ec022587905a0d43eb286f507",
                 "shasum": ""
             },
             "require": {
                 "bower-asset/typeahead.js": "0.10.* | ~0.11.0",
                 "phpspec/php-diff": ">=1.0.2",
-                "yiisoft/yii2": "~2.0.13",
-                "yiisoft/yii2-bootstrap": "~2.0.0"
+                "yiisoft/yii2": ">=2.0.4",
+                "yiisoft/yii2-bootstrap": "~2.0"
             },
             "type": "yii2-extension",
             "extra": {
@@ -3176,12 +3441,60 @@
                 "gii",
                 "yii2"
             ],
-            "time": "2017-12-22T23:53:06+00:00"
+            "time": "2016-03-18T14:09:46+00:00"
+        },
+        {
+            "name": "yiisoft/yii2-jui",
+            "version": "2.0.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/yiisoft/yii2-jui.git",
+                "reference": "ce45c16d4fbbe7d1c516d8d0e8311e07f6138eed"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/yiisoft/yii2-jui/zipball/ce45c16d4fbbe7d1c516d8d0e8311e07f6138eed",
+                "reference": "ce45c16d4fbbe7d1c516d8d0e8311e07f6138eed",
+                "shasum": ""
+            },
+            "require": {
+                "bower-asset/jquery-ui": "~1.12.1",
+                "yiisoft/yii2": "~2.0.4"
+            },
+            "type": "yii2-extension",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "yii\\jui\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Qiang Xue",
+                    "email": "qiang.xue@gmail.com"
+                }
+            ],
+            "description": "The Jquery UI extension for the Yii framework",
+            "keywords": [
+                "jQuery UI",
+                "yii2"
+            ],
+            "time": "2017-11-25T15:32:29+00:00"
         }
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "ivan-chkv/yii2-gii-plus": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

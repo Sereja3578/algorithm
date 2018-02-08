@@ -1,13 +1,14 @@
 <?php
-namespace frontend\models;
+namespace common\forms;
 
+use common\models\Admin;
 use yii\base\Model;
 use common\models\User;
 
 /**
  * Signup form
  */
-class SignupForm extends Model
+class SignupForm extends UserForm
 {
     public $username;
     public $email;
@@ -46,8 +47,8 @@ class SignupForm extends Model
         if (!$this->validate()) {
             return null;
         }
-        
-        $user = new User();
+
+        $user = ($this->scenario == 'user_action') ? new User() : new Admin();
         $user->username = $this->username;
         $user->email = $this->email;
         $user->setPassword($this->password);

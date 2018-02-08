@@ -2,10 +2,11 @@
 
 /* @var $this yii\web\View */
 /* @var $form yii\bootstrap\ActiveForm */
-/* @var $model \common\models\LoginForm */
+/* @var $model \common\forms\LoginForm */
 
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
+use yii\helpers\Url;
 
 $this->title = $model->getFormTitle();
 $this->params['breadcrumbs'][] = $this->title;
@@ -24,6 +25,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?= $form->field($model, 'password')->passwordInput() ?>
 
                 <?= $form->field($model, 'rememberMe')->checkbox() ?>
+
+                <div style="color:#999;margin:1em 0">
+                    <?= Html::a(Yii::t('login', 'Восстановить пароль'), Url::toRoute(['auth/request-password-reset'])); ?>
+                </div>
 
                 <div class="form-group">
                     <?= Html::submitButton(Yii::t('buttons', 'Войти'), ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
