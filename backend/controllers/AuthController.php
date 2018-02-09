@@ -10,10 +10,9 @@ namespace backend\controllers;
 
 use common\forms\PasswordResetRequestForm;
 use common\forms\ResetPasswordForm;
-use common\forms\SignupForm;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
-use yii\web\Controller;
+use backend\components\Controller;
 use common\forms\LoginForm;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
@@ -26,7 +25,7 @@ class AuthController extends Controller {
      */
     public function behaviors()
     {
-        return [
+        return array_merge(parent::behaviors(), [
             'access' => [
                 'class' => AccessControl::className(),
                 'only' => ['logout', 'signup', 'login'],
@@ -49,7 +48,7 @@ class AuthController extends Controller {
                     'logout' => ['post'],
                 ],
             ],
-        ];
+        ]);
     }
 
     /**
@@ -72,6 +71,8 @@ class AuthController extends Controller {
      */
     public function actionLogin()
     {
+        $this->layout = 'main-login';
+
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
@@ -107,6 +108,7 @@ class AuthController extends Controller {
      */
     public function actionRequestPasswordReset()
     {
+        $this->layout = 'main-login';
         $model = new PasswordResetRequestForm();
         $model->setScenario('admin_action');
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
@@ -133,6 +135,7 @@ class AuthController extends Controller {
      */
     public function actionResetPassword($token)
     {
+        $this->layout = 'main-login';
         try {
             $model = new ResetPasswordForm($token);
         } catch (InvalidParamException $e) {

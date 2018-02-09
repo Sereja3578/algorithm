@@ -3,13 +3,12 @@ namespace common\forms;
 
 use common\models\Admin;
 use Yii;
-use yii\base\Model;
 use common\models\User;
 
 /**
  * Password reset request form
  */
-class PasswordResetRequestForm extends BaseForm
+class PasswordResetRequestForm extends UserForm
 {
     public $email;
 
@@ -30,9 +29,10 @@ class PasswordResetRequestForm extends BaseForm
 
     public function emailValidation($email)
     {
-        $user = ($this->scenario == 'user_action') ?
-            User::findOne(['email' => $this->email, 'status' => User::STATUS_ACTIVE]) :
-            Admin::findOne(['email' => $this->email, 'status' => Admin::STATUS_ACTIVE]);
+        /* @var User|Admin $userModel */
+        $userModel = $this->getNewUser();
+        $user = $userModel::findOne(['email' => $email, 'status' => $userModel::STATUS_ACTIVE]);
+
         return $user ? true : false;
     }
 
@@ -43,29 +43,26 @@ class PasswordResetRequestForm extends BaseForm
      */
     public function sendEmail()
     {
-        if($this->scenario == 'user_action') {
-            /* @var $user User */
-            $user = User::findOne([
-                'status' => User::STATUS_ACTIVE,
-                'email' => $this->email,
-            ]);
-        } else {
-            /* @var $user Admin */
-            $user = Admin::findOne([
-                'status' => Admin::STATUS_ACTIVE,
-                'email' => $this->email,
-            ]);
-        }
+
+        /* @var User|Admin $userModel */
+        $userModel = $this->getNewUser();
+
+        $user = $userModel::findOne([
+            'status' => User::STATUS_ACTIVE,
+            'email' => $this->email,
+        ]);
 
         if (!$user) {
             return false;
         }
-        
-        if (!User::isPasswordResetTokenValid($user->password_reset_token)) {
-            $user->generatePasswordResetToken();
-            if (!$user->save()) {
-                return false;
-            }
+
+        $user->generatePasswordResetToken();
+
+        var_dump($user);
+        exit();
+
+        if (!$user->save()) {
+            return false;
         }
 
         return Yii::$app

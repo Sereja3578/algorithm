@@ -19,6 +19,7 @@ class Admin extends ActiveFixture
         'auth_key' => '',
         'password_hash' => '',
         'password_reset_token' => '',
+        'password_reset_token_expires_at' => '',
         'email' => '',
         'status' => '',
         'created_at' => '',

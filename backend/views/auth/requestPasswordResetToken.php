@@ -1,31 +1,47 @@
 <?php
 
-/* @var $this yii\web\View */
-/* @var $form yii\bootstrap\ActiveForm */
-/* @var $model \common\forms\PasswordResetRequestForm */
-
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
+use yii\helpers\Url;
 
-$this->title = 'Request password reset';
-$this->params['breadcrumbs'][] = $this->title;
+/* @var $this yii\web\View */
+/* @var $model common\forms\ResetPasswordForm */
+
+$this->title = Yii::t('auth', 'Восстановить пароль');
+
+$fieldOptions = [
+    'options' => ['class' => 'form-group has-feedback'],
+    'inputTemplate' => '{input}<span class="glyphicon glyphicon-envelope form-control-feedback"></span>'
+];
+
 ?>
-<div class="site-request-password-reset">
-    <h1><?= Html::encode($this->title) ?></h1>
+<div class="login-box">
+    <div class="login-logo">
+        <a href="#"><b>Admin</b>Algorithm</a>
+    </div>
+    <div class="login-box-body">
+        <p class="login-box-msg"><?= $this->title ?></p>
+        <?php
+        $form = ActiveForm::begin([
+            'id' => $model->formName(),
+            'enableClientValidation' => false
+        ]);
+        ?>
 
-    <p>Please fill out your email. A link to reset password will be sent there.</p>
+        <?= $form->field($model, 'email', $fieldOptions)->label(false)
+            ->textInput(['placeholder' => $model->getAttributeLabel('email')]) ?>
 
-    <div class="row">
-        <div class="col-lg-5">
-            <?php $form = ActiveForm::begin(['id' => 'request-password-reset-form']); ?>
-
-                <?= $form->field($model, 'email')->textInput(['autofocus' => true]) ?>
-
-                <div class="form-group">
-                    <?= Html::submitButton('Send', ['class' => 'btn btn-primary']) ?>
-                </div>
-
-            <?php ActiveForm::end(); ?>
+        <div class="row">
+            <div class="col-xs-12">
+                <a href="<?= Url::toRoute(['login']) ?>" style="line-height: 34px">
+                    &larr; <?= Yii::t('auth', 'Назад') ?>
+                </a>
+                <?= Html::submitButton(Yii::t('buttons', 'Отправить'), [
+                    'class' => 'btn btn-primary btn-flat pull-right',
+                    'name' => 'login-button'
+                ]) ?>
+            </div>
         </div>
+        <?php ActiveForm::end(); ?>
     </div>
 </div>

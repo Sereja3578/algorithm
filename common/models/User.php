@@ -213,7 +213,7 @@ class User extends UserBase implements IdentityInterface
         return array_merge(parent::rules(), [
             [['newPassword'], 'string', 'length' => [6, 50]],
             [['role'], 'in', 'range' => array_keys(static::roleListItems()), 'allowArray' => true],
-            [['role', 'phone'], 'required'],
+            [['role'], 'required'],
             [['newPassword'], $this->isNewRecord?'required':'safe'],
         ]);
     }

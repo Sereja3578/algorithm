@@ -3,6 +3,7 @@
 namespace common\models\base;
 
 use Yii;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "admin".
@@ -12,10 +13,11 @@ use Yii;
  * @property string $auth_key
  * @property string $password_hash
  * @property string $password_reset_token
+ * @property string $password_reset_token_expires_at
  * @property string $email
  * @property integer $status
- * @property integer $created_at
- * @property integer $updated_at
+ * @property string $created_at
+ * @property string $updated_at
  */
 class AdminBase extends \common\components\ActiveRecord
 {
@@ -33,19 +35,34 @@ class AdminBase extends \common\components\ActiveRecord
     public function rules()
     {
         return [
+            [['status'], 'integer'],
             [[
-                'status',
+                'password_reset_token_expires_at',
                 'created_at',
                 'updated_at'
-            ], 'integer'],
-            [['username', 'auth_key', 'password_hash', 'email', 'created_at', 'updated_at'], 'required'],
+            ], 'filter', 'filter' => function ($value) {
+                return is_int($value) ? date('Y-m-d H:i:s', $value) : $value;
+            }],
+            [[
+                'password_reset_token_expires_at',
+                'created_at',
+                'updated_at'
+            ], 'date', 'format' => 'php:Y-m-d H:i:s'],
+            [['username', 'auth_key', 'password_hash', 'email'], 'required'],
             [['username', 'password_hash', 'password_reset_token', 'email'], 'string', 'max' => 255],
             [['auth_key'], 'string', 'max' => 32],
             [['username'], 'unique'],
             [['email'], 'unique'],
             [['password_reset_token'], 'unique'],
+            [[
+                'created_at',
+                'updated_at'
+            ], 'default', 'value' => new Expression('CURRENT_TIMESTAMP')],
             [['status'], 'default', 'value' => '10'],
-            [['password_reset_token'], 'default', 'value' => null],
+            [[
+                'password_reset_token',
+                'password_reset_token_expires_at'
+            ], 'default', 'value' => null],
         ];
     }
 
@@ -60,10 +77,11 @@ class AdminBase extends \common\components\ActiveRecord
             'auth_key' => Yii::t('models', 'Auth Key'),
             'password_hash' => Yii::t('models', 'Password Hash'),
             'password_reset_token' => Yii::t('models', 'Password Reset Token'),
+            'password_reset_token_expires_at' => Yii::t('models', 'Время окончания действия токена восстановления пароля'),
             'email' => Yii::t('models', 'Email'),
             'status' => Yii::t('models', 'Status'),
-            'created_at' => Yii::t('models', 'Created At'),
-            'updated_at' => Yii::t('models', 'Updated At'),
+            'created_at' => Yii::t('models', 'Созданов в'),
+            'updated_at' => Yii::t('models', 'Обновлено в'),
         ];
     }
 
@@ -74,6 +92,18 @@ class AdminBase extends \common\components\ActiveRecord
     public static function find()
     {
         return new \common\models\query\AdminQuery(get_called_class());
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function datetimeAttributes()
+    {
+        return [
+            'password_reset_token_expires_at',
+            'created_at',
+            'updated_at'
+        ];
     }
 
     /**
@@ -268,5 +298,18 @@ class AdminBase extends \common\components\ActiveRecord
     public static function passwordResetTokenByEmail($email)
     {
         return static::find()->select(['password_reset_token'])->pk($email)->scalar();
+    }
+
+    /**
+     * @param bool $passwordResetTokenNotExpired
+     * @return bool
+     */
+    public function getIsPasswordResetTokenNotExpired($passwordResetTokenNotExpired = true)
+    {
+        if ($passwordResetTokenNotExpired) {
+            return is_null($this->password_reset_token_expires_at) || strtotime($this->password_reset_token_expires_at) > time();
+        } else {
+            return !is_null($this->password_reset_token_expires_at) && strtotime($this->password_reset_token_expires_at) <= time();
+        }
     }
 }

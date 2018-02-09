@@ -40,6 +40,14 @@ class UserForm extends BaseForm
     }
 
     /**
+     * @return Admin|User
+     */
+    protected function getNewUser()
+    {
+        return ($this->scenario == 'user_action') ? new User() : new Admin();
+    }
+
+    /**
      * @return array
      */
     public function scenarios()

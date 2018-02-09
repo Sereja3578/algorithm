@@ -30,6 +30,17 @@ return [
                 '@vendor' => []
             ]
         ],
+        'migrate' => [
+            'class' => 'console\controllers\MigrateController',
+            'templateFile' => '@app/templates/migrations/migration.php',
+            'generatorTemplateFiles' => [
+                'create_table' => '@app/templates/migrations/createTableMigration.php',
+                'drop_table' => '@app/templates/migrations/dropTableMigration.php',
+                'add_column' => '@yii/views/addColumnMigration.php',
+                'drop_column' => '@yii/views/dropColumnMigration.php',
+                'create_junction' => '@app/templates/migrations/createTableMigration.php',
+            ]
+        ],
     ],
     'components' => [
         'log' => [
