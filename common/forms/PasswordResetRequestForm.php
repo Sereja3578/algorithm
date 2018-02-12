@@ -58,9 +58,6 @@ class PasswordResetRequestForm extends UserForm
 
         $user->generatePasswordResetToken();
 
-        var_dump($user);
-        exit();
-
         if (!$user->save()) {
             return false;
         }
