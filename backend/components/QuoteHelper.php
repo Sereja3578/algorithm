@@ -2,17 +2,18 @@
 /**
  * Created by PhpStorm.
  * User: ilichev
- * Date: 14.02.2018
- * Time: 16:21
+ * Date: 19.02.2018
+ * Time: 10:41
  */
 
 namespace backend\components;
 
+
 use common\components\KeyValue;
 use common\components\QuoteChunkSearch;
+use common\models\Asset;
 
-//@todo перенести в quoteHelper, а в этом класе сделать доступ ко всем входным параметрам.
-class AlgorithmHelper
+class QuoteHelper
 {
     /**
      * @message Котировка повысилась
@@ -28,13 +29,14 @@ class AlgorithmHelper
     const QUOTE_NOT_CHANGED = '0';
 
     /**
-     * @param string $assetName
+     * @param integer $assetId
      * @param $startDate
      * @param $endDate
      * @return KeyValue[]
      */
-    public static function getQuotes($assetName, $startDate, $endDate)
+    public static function getQuotes($assetId, $startDate, $endDate)
     {
+        $assetName = Asset::findOne(['id' => $assetId])->code;
         $quoteChunkSearch = new QuoteChunkSearch();
         $quoteChunkSearch->dateInterval = $startDate . ' - ' . $endDate;
         $quoteChunkSearch->assetName = $assetName;

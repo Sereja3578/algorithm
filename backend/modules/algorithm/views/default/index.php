@@ -1,12 +1,22 @@
-<div class="algorithm-default-index">
-    <h1><?= $this->context->action->uniqueId ?></h1>
-    <p>
-        This is the view content for action "<?= $this->context->action->id ?>".
-        The action belongs to the controller "<?= get_class($this->context) ?>"
-        in the "<?= $this->context->module->id ?>" module.
+<?php
+
+use yii\helpers\Html;
+use yii\grid\GridView;
+
+/* @var $this yii\web\View */
+/* @var $searchModel backend\modules\algorithm\models\AlgorithmParamsSearch */
+/* @var $dataProvider yii\data\ActiveDataProvider */
+
+$this->title = $searchModel->getGridTitle();
+$this->params['breadcrumbs'][] = $this->title;
+?>
+<div class="algorithm-params-index">
+    <p class="pull-right">
+        <?= Html::a(Yii::t('models', 'Создать новый алгоритм'), ['run'], ['class' => 'btn btn-success']) ?>
     </p>
-    <p>
-        You may customize this page by editing the following file:<br>
-        <code><?= __FILE__ ?></code>
-    </p>
+    <?= GridView::widget([
+        'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
+        'columns' => $searchModel->getGridColumns(),
+    ]); ?>
 </div>

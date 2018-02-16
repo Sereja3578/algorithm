@@ -8,6 +8,7 @@
 
 namespace backend\components;
 
+use common\components\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 use yii\web\Controller as BaseController;
@@ -17,6 +18,11 @@ use yii\web\ForbiddenHttpException;
 
 class Controller extends BaseController
 {
+    /**
+     * @var string
+     */
+    public $searchModel;
+
     /**
      * @return array
      */
@@ -75,5 +81,21 @@ class Controller extends BaseController
     {
         $permissionPrefix = $this->getPermissionPrefix();
         return Yii::$app->user->can($permissionPrefix);
+    }
+
+    /**
+     * @param string $searchModel
+     */
+    public function setSearchModel(string $searchModel)
+    {
+        $this->searchModel = $searchModel;
+    }
+
+    /**
+     * @return ActiveRecord
+     */
+    public function getSearchModel() : ActiveRecord
+    {
+        return new $this->searchModel;
     }
 }

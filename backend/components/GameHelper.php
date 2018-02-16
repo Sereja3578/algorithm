@@ -16,27 +16,6 @@ class GameHelper
 
     const EXPIRATION = 5;
 
-    /**
-     * @var array
-     */
-    private static $params;
-
-    /**
-     * @return array
-     */
-    public static function getParams(): array
-    {
-        return self::$params;
-    }
-
-    /**
-     * @param array $params
-     */
-    public static function setParams(array $params)
-    {
-        self::$params = $params;
-    }
-
     public static function startGame(array $games)
     {
         $gameId = self::chooseGameByChance($games);
@@ -82,11 +61,11 @@ class GameHelper
             }
 
             if ($quotes[$key - 1]['ask'] > $quote['ask']) {
-                $preparedResultGameSteps[$quote['timestamp']] = AlgorithmHelper::QUOTE_DECREASE;
+                $preparedResultGameSteps[$quote['timestamp']] = QuoteHelper::QUOTE_DECREASE;
             } elseif ($quotes[$key - 1]['ask'] < $quote['ask']) {
-                $preparedResultGameSteps[$quote['timestamp']] = AlgorithmHelper::QUOTE_INCREASE;
+                $preparedResultGameSteps[$quote['timestamp']] = QuoteHelper::QUOTE_INCREASE;
             } elseif ($quotes[$key - 1]['ask'] == $quote['ask']) {
-                $preparedResultGameSteps[$quote['timestamp']] = AlgorithmHelper::QUOTE_NOT_CHANGED;
+                $preparedResultGameSteps[$quote['timestamp']] = QuoteHelper::QUOTE_NOT_CHANGED;
             }
         }
 

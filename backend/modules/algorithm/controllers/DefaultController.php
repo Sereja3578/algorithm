@@ -2,10 +2,11 @@
 
 namespace backend\modules\algorithm\controllers;
 
-use backend\components\AlgorithmHelper;
 use backend\components\Controller;
 use backend\components\GameHelper;
-use common\components\KeyValueDataProvider;
+use backend\components\QuoteHelper;
+use backend\modules\algorithm\models\AlgorithmParamsSearch;
+use common\models\AlgorithmParams;
 use Yii;
 
 /**
@@ -13,13 +14,23 @@ use Yii;
  */
 class DefaultController extends Controller
 {
+    public $searchModel = 'backend\modules\algorithm\models\AlgorithmParamsSearch';
+
     /**
      * Renders the index view for the module
      * @return string
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        /**
+         * @var AlgorithmParamsSearch $searchModel
+         */
+        $searchModel = $this->getSearchModel();
+        $dataProvider = $searchModel->search();
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
     }
 
     public function actionRun()
@@ -33,7 +44,7 @@ class DefaultController extends Controller
             // Коэффициент удачливости игрока
             'k_lucky' => 1.3,
             // Валютная пара по которй вытаскиваем котировки
-            'asset_name' => 'EURUSD',
+            'asset_id' => 1,
             // Начальная сумма > t_ends
             'amount_start' => 200,
             // Конечная сумма к которой стремится алгоритм
@@ -74,14 +85,31 @@ class DefaultController extends Controller
             'probability_play' => 0.7,
         ];
 
-        $quotes = AlgorithmHelper::getQuotes($params['asset_name'], $params['t_start'], $params['t_end']);
-        $expectedResultGames = GameHelper::getExpectedResultGameSteps($quotes);
+        // Получаем котировки
+        $quotes = QuoteHelper::getQuotes($params['asset_id'], $params['t_start'], $params['t_end']);
+        $games = serialize($params['games']);
+        $rates = implode(', ', $params['rates']);
 
-        var_dump($quotes);
-        exit();
+        // Заменяем на реальные котировки в дефолтных настройках и подменяем массивы на строки чтобы прошла валидация
+        $params = [
+            'AlgorithmParams' => array_merge($params, [
+                'quotes' => $quotes,
+                'games' => $games,
+                'rates' => $rates,
+            ])
+        ];
 
-        for($i = 0; $i <= $params['iterations']; $i++) {
-            GameHelper::startGame($params['games']);
+        $model = new AlgorithmParams();
+        $model->scenario = 'run';
+        if($model->load($params) && $model->validate()) {
+            $expectedResultGames = GameHelper::getExpectedResultGameSteps($quotes);
+
+            var_dump($model);
+            exit();
+
+            for($i = 0; $i <= $params['iterations']; $i++) {
+                GameHelper::startGame(explode(', ', $params['games']));
+            }
         }
 
 //        /* @var  KeyValueDataProvider*/
