@@ -19,7 +19,8 @@
         "yiisoft/yii2-bootstrap": "~2.0.0",
         "yiisoft/yii2-swiftmailer": "~2.0.0 || ~2.1.0",
         "codemix/yii2-localeurls": "^1.5",
-        "dmstr/yii2-adminlte-asset": "^2.1"
+        "dmstr/yii2-adminlte-asset": "^2.1",
+        "dcb9/yii2-phpredis": "^1.1"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

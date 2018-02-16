@@ -8,7 +8,7 @@
 
 namespace backend\modules\user\controllers;
 
-use yii\web\Controller;
+use backend\components\Controller;
 
 class UserController extends Controller
 {

@@ -15,7 +15,10 @@ return [
     'modules' => [
         'user' => [
             'class' => 'backend\modules\user\Module'
-        ]
+        ],
+        'algorithm' => [
+            'class' => 'backend\modules\algorithm\Module',
+        ],
     ],
     'components' => [
         'request' => [

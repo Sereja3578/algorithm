@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "38e23d6ebbf5b5e744b2c513f31accc9",
+    "content-hash": "257cba7ece8a9bd38fd7205c7db73473",
     "packages": [
         {
             "name": "almasaeed2010/adminlte",
@@ -413,6 +413,48 @@
                 "zikula"
             ],
             "time": "2017-12-29T09:13:20+00:00"
+        },
+        {
+            "name": "dcb9/yii2-phpredis",
+            "version": "v1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dcb9/yii2-phpredis.git",
+                "reference": "626e76deff415afbde0b8deee45b4c58bed0cecf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dcb9/yii2-phpredis/zipball/626e76deff415afbde0b8deee45b4c58bed0cecf",
+                "reference": "626e76deff415afbde0b8deee45b4c58bed0cecf",
+                "shasum": ""
+            },
+            "require": {
+                "ext-redis": ">=2.2.7",
+                "php": ">=5.4.0",
+                "yiisoft/yii2": "~2.0.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "<6.0",
+                "yiisoft/yii2-redis": "^2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "dcb9\\redis\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD"
+            ],
+            "authors": [
+                {
+                    "name": "Bob Chengbin",
+                    "email": "bob@phpor.me"
+                }
+            ],
+            "description": "yii2 with phpredis",
+            "time": "2017-06-29T05:11:55+00:00"
         },
         {
             "name": "dmstr/yii2-adminlte-asset",

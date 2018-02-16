@@ -71,9 +71,7 @@ class RbacController extends Controller
             'admin' => [
                 'common_user',
                 'user',
-                'gii',
-                'debug',
-                'auth'
+                'algorithm'
             ],
             'common_user' => [
                 'common_permission'

@@ -88,6 +88,7 @@ class ActiveRecord extends BoostActiveRecord
         if (!$this->getIsNewRecord()) {
             $params = array_merge($params, $this->getPrimaryKey(true));
         }
+
         $params['model'] = $this;
         return Yii::$app instanceof Application && Yii::$app->getUser()->can($permissionName, $params, $allowCaching);
     }
