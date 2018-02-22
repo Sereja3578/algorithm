@@ -17,9 +17,17 @@ class AlgorithmTimer
     private static $currentTime;
 
     /**
+     * @return string
+     */
+    public static function getCurrentTime() : string
+    {
+        return date('Y-m-d H-i:s', self::$currentTime);
+    }
+
+    /**
      * @return int
      */
-    public static function getCurrentTime() : int
+    public static function getCurrentTimestamp() : int
     {
         return self::$currentTime;
     }
@@ -27,11 +35,11 @@ class AlgorithmTimer
     /**
      * Set current time
      *
-     * @param int $currentTime
+     * @param string $currentTime
      */
-    public static function setCurrentTime(int $currentTime)
+    public static function setCurrentTime(string $currentTime)
     {
-        self::$currentTime = $currentTime;
+        self::$currentTime = strtotime($currentTime);
     }
 
     /**

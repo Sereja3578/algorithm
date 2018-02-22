@@ -13,6 +13,8 @@ class Game extends ActiveFixture
 
     public $modelClass = 'common\models\Game';
 
+    public $backDepends = ['common\fixtures\Strategy'];
+
     /*[
         'id' => '',
         'name' => '',

@@ -15,6 +15,8 @@ class AlgorithmParams extends ActiveFixture
 
     public $depends = ['common\fixtures\Asset'];
 
+    public $backDepends = ['common\fixtures\Strategy'];
+
     /*[
         'id' => '',
         'iterations' => '',

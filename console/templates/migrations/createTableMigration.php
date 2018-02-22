@@ -42,7 +42,7 @@ class <?= $className ?> extends Migration
     'foreignKeys' => $foreignKeys,
 ])
 ?>
-}
+    }
 
     /**
     * @inheritdoc

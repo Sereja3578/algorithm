@@ -5,6 +5,7 @@ namespace common\models\base;
 use Yii;
 use common\models\Asset;
 use yii\db\Expression;
+use common\models\Strategy;
 
 /**
  * This is the model class for table "algorithm_params".
@@ -28,6 +29,7 @@ use yii\db\Expression;
  * @property string $updated_at
  *
  * @property Asset $asset
+ * @property Strategy[] $strategies
  */
 class AlgorithmParamsBase extends \common\components\ActiveRecord
 {
@@ -133,6 +135,14 @@ class AlgorithmParamsBase extends \common\components\ActiveRecord
     }
 
     /**
+     * @return \common\models\query\StrategyQuery|\yii\db\ActiveQuery
+     */
+    public function getStrategies()
+    {
+        return $this->hasMany(Strategy::className(), ['algorithm_params_id' => 'id']);
+    }
+
+    /**
      * @inheritdoc
      * @return \common\models\query\AlgorithmParamsQuery the active query used by this AR class.
      */
@@ -152,6 +162,22 @@ class AlgorithmParamsBase extends \common\components\ActiveRecord
                 'class' => 'common\models\Asset',
                 'link' => ['id' => 'asset_id'],
                 'direct' => true,
+                'viaTable' => false
+            ]
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function pluralRelations()
+    {
+        return [
+            'strategies' => [
+                'hasMany' => true,
+                'class' => 'common\models\Strategy',
+                'link' => ['algorithm_params_id' => 'id'],
+                'direct' => false,
                 'viaTable' => false
             ]
         ];
@@ -201,6 +227,17 @@ class AlgorithmParamsBase extends \common\components\ActiveRecord
     // {
     //     return $this->id;
     // }
+
+    /**
+     * @param array $config
+     * @return Strategy
+     */
+    public function newStrategy(array $config = [])
+    {
+        $model = new Strategy($config);
+        $model->algorithm_params_id = $this->id;
+        return $model;
+    }
 
     /**
      * @param string|array|Expression $condition

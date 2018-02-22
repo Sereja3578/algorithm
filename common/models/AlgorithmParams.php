@@ -20,12 +20,15 @@ class AlgorithmParams extends AlgorithmParamsBase
     public $coefs;
 
     /**
-     * @return array
+     * @return bool
      */
-    public function rules()
+    public function beforeValidate()
     {
-        return array_merge(parent::rules(), [
-            [['quotes', 'coefs'], 'safe', 'on' => 'run']
-        ]);
+        if(parent::beforeValidate()){
+            $this->games = serialize($this->games);
+            $this->rates = implode(', ', $this->rates);
+            return true;
+        };
+        return false;
     }
 }

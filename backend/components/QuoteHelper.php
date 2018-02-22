@@ -11,7 +11,10 @@ namespace backend\components;
 
 use common\components\KeyValue;
 use common\components\QuoteChunkSearch;
+use common\models\AlgorithmParams;
 use common\models\Asset;
+use yii\base\InvalidParamException;
+use Yii;
 
 class QuoteHelper
 {
@@ -29,16 +32,27 @@ class QuoteHelper
     const QUOTE_NOT_CHANGED = '0';
 
     /**
-     * @param integer $assetId
-     * @param $startDate
-     * @param $endDate
+     * @var AlgorithmParams
+     */
+    public $algorithmParamsModel;
+
+    /**
+     * QuoteHelper constructor.
+     * @param $algorithmParamsModel
+     */
+    function __construct($algorithmParamsModel)
+    {
+        $this->algorithmParamsModel = $algorithmParamsModel;
+    }
+
+    /**
      * @return KeyValue[]
      */
-    public static function getQuotes($assetId, $startDate, $endDate)
+    public function getQuotes()
     {
-        $assetName = Asset::findOne(['id' => $assetId])->code;
+        $assetName = Asset::findOne(['id' => $this->algorithmParamsModel->asset_id])->code;
         $quoteChunkSearch = new QuoteChunkSearch();
-        $quoteChunkSearch->dateInterval = $startDate . ' - ' . $endDate;
+        $quoteChunkSearch->dateInterval = $this->algorithmParamsModel->t_start . ' - ' . $this->algorithmParamsModel->t_end;
         $quoteChunkSearch->assetName = $assetName;
 
         $quotes = $quoteChunkSearch->search()->getModels();
@@ -46,10 +60,18 @@ class QuoteHelper
         return $quotes;
     }
 
-    public static function getCurrentQuote(int $currentDate, array $quotes)
+    /**
+     * @param string|integer $currentDate
+     * @return array|null
+     */
+    public function getCurrentQuote($currentDate)
     {
+        if(!is_int($currentDate)) {
+            $currentDate = strtotime($currentDate);
+        }
+
         $items = [];
-        foreach ($quotes as $quote) {
+        foreach ($this->getQuotes() as $quote) {
             $timestamp = strtotime($quote['timestamp']);
             if ($timestamp >= $currentDate) {
                 $items[$timestamp] =  $quote;

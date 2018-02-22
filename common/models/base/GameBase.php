@@ -4,6 +4,7 @@ namespace common\models\base;
 
 use Yii;
 use yii\db\Expression;
+use common\models\Strategy;
 
 /**
  * This is the model class for table "game".
@@ -13,6 +14,8 @@ use yii\db\Expression;
  * @property integer $number_steps
  * @property string $created_at
  * @property string $updated_at
+ *
+ * @property Strategy[] $strategies
  */
 class GameBase extends \common\components\ActiveRecord
 {
@@ -65,12 +68,36 @@ class GameBase extends \common\components\ActiveRecord
     }
 
     /**
+     * @return \common\models\query\StrategyQuery|\yii\db\ActiveQuery
+     */
+    public function getStrategies()
+    {
+        return $this->hasMany(Strategy::className(), ['game_id' => 'id']);
+    }
+
+    /**
      * @inheritdoc
      * @return \common\models\query\GameQuery the active query used by this AR class.
      */
     public static function find()
     {
         return new \common\models\query\GameQuery(get_called_class());
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function pluralRelations()
+    {
+        return [
+            'strategies' => [
+                'hasMany' => true,
+                'class' => 'common\models\Strategy',
+                'link' => ['game_id' => 'id'],
+                'direct' => false,
+                'viaTable' => false
+            ]
+        ];
     }
 
     /**
@@ -115,4 +142,15 @@ class GameBase extends \common\components\ActiveRecord
     // {
     //     return $this->id;
     // }
+
+    /**
+     * @param array $config
+     * @return Strategy
+     */
+    public function newStrategy(array $config = [])
+    {
+        $model = new Strategy($config);
+        $model->game_id = $this->id;
+        return $model;
+    }
 }
