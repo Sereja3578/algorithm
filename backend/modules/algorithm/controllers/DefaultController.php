@@ -37,7 +37,6 @@ class DefaultController extends Controller
     public function actionRun()
     {
 
-        //@todo сделать инициализацию параметров в AlgorithmHelper
         //$params = Yii::$app->request->post();
         $params = [
             'AlgorithmParams' => [
@@ -83,18 +82,23 @@ class DefaultController extends Controller
         $model = new AlgorithmParams();
         if($model->load($params) && $model->validate()) {
             // Создаем хелперы с параметрами алгоритма
-            AlgorithmTimer::setCurrentTime($model->t_start);
             $quoteHelper = new QuoteHelper($model);
             $gameHelper = new GameHelper($model);
 
-            // Получаем котировки
-//            $quotes = $quoteHelper->getQuotes();
-            //$expectedResultGameSteps = GameHelper::getExpectedResultGameSteps($quotes);
+            $quotes = $quoteHelper->getQuotes();
+            /*
+             * Устанавливаем начальное время равным минимальному времени котировки максимально приближенной к заданному
+             * начальному времени
+             */
+            $currentQuote = $quoteHelper->getCurrentQuote($model->t_start);
+            AlgorithmTimer::setCurrentTime($currentQuote['timestamp']);
+            // Формируем массив с подготовленными результатами игры на каждую секунду
+            $gameHelper->setPreparedResultGameSteps($quotes);
 
 //            var_dump($quotes);
 //            exit();
 
-            for($iterationNumber = 0; $iterationNumber <= $model->iterations; $iterationNumber++) {
+            for($iterationNumber = 1; $iterationNumber <= $model->iterations; $iterationNumber++) {
                 $gameHelper->playerSimulation($iterationNumber);
             }
         }

@@ -49,5 +49,23 @@ class AlgorithmTimer
     {
         self::$currentTime += $increment;
     }
+
+    /**
+     * @param int $decrement
+     * @return int
+     */
+    public static function getDecrementedTimestamp(int $decrement): int
+    {
+        return self::$currentTime - $decrement;
+    }
+
+    /**
+     * @param int $decrement
+     * @return string
+     */
+    public static function getDecrementedTime(int $decrement): string
+    {
+        return date('Y-m-d H-i:s', self::$currentTime - $decrement);
+    }
 }
 

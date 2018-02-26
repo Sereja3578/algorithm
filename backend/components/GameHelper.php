@@ -16,7 +16,20 @@ use common\models\Strategy;
 class GameHelper
 {
 
+    /**
+     * @message Экспирация шага
+     */
     const EXPIRATION = 5;
+
+    /**
+     * @message Игра выиграна
+     */
+    const GAME_WIN = 1;
+
+    /**
+     * @message Игра проиграна
+     */
+    const GAME_FAILED = 0;
 
     /**
      * @var AlgorithmParams
@@ -33,6 +46,21 @@ class GameHelper
     public $iterationNumber;
 
     /**
+     * @var array
+     */
+    public $currentStrategyParams;
+
+    /**
+     * @var int
+     */
+    public $checkMoneyNumberStep = 1;
+
+    /**
+     * @var array
+     */
+    public $preparedResultGameSteps;
+
+    /**
      * GameHelper constructor.
      * @param $algorithmParamsModel
      */
@@ -45,9 +73,8 @@ class GameHelper
     {
         $this->setIterationNumber($iterationNumber);
         $algorithmParamsModel = $this->algorithmParamsModel;
-        $checkMoneyNumberStep = 1;
 
-        if (!$this->checkMoney($checkMoneyNumberStep)) {
+        if (!$this->checkMoney($this->getCheckMoneyNumberStep())) {
             return false;
         }
 
@@ -55,17 +82,18 @@ class GameHelper
 //            $this->checkStrategy();
 //        }
 
-        if (!$this->checkMoney(++$checkMoneyNumberStep)) {
+        if (!$this->checkMoney($this->getIncrementedCheckMoneyNumberStep())) {
             return false;
         }
 
         if ($this->playGameOrNotPlay()) {
-
             $gameId = $this->chooseGameByChance(unserialize($algorithmParamsModel->games));
             $game = $this->getGame($gameId);
 
             if ($game) {
-                $this->startGame($game);
+                if(!$this->startGame($game)) {
+                    return false;
+                }
             }
 
         }
@@ -73,20 +101,55 @@ class GameHelper
         return true;
     }
 
+    /**
+     * Игра начинается с выбора ставки.
+     * Затем текущее количество денег уменьшается на размер выбранной ставки.
+     * Проверяется оставшееся колличество денег,
+     * если оно больше чем money_end, то проверяем
+     *
+     * @param $game
+     * @return bool
+     */
     public function startGame($game)
     {
         $algorithmParamsModel = $this->algorithmParamsModel;
+        $rate = $this->chooseRate();
+        $algorithmParamsModel->amount_start -= $rate;
 
         /*
         * Имитируем работу игры.
         * Увеличиваем текущее время на число шагов умноженное на время экспирации.
         */
-        for ($i = 0; $i <= $game->number_steps; $i++) {
-            AlgorithmTimer::incrementCurrentTime(self::EXPIRATION);
-        }
+        AlgorithmTimer::incrementCurrentTime($game->number_steps * self::EXPIRATION);
 
+        // @todo реализовать определение результата игры
         // Теперь решаем выиграл игрок или проиграл.
 
+        // @todo получить прогноз.
+        $forecast = $this->getForecast(1, $game);
+
+        // После того, как игра сыграна, устанавливаем параметры текущей стратегии
+//        $currentStrategyParams = [
+//            'algorithm_params_id' => $algorithmParamsModel->id,
+//            'timestamp' => AlgorithmTimer::getCurrentTime(),
+//            'iteration_number' => $this->iterationNumber,
+//            'money_amount' => $algorithmParamsModel->amount_start,
+//            'game_id' => $game->id,
+//            'rate_amount' => ,
+//            'forecast' => ,
+//            'result' => ,
+//            'best_strategy' => ,
+//        ];
+//        $this->setCurrentStrategyParams($currentStrategyParams);
+
+        // Проверяем деньги и действуем исходя из результата-проверки
+        if (!$this->checkMoney($this->getIncrementedCheckMoneyNumberStep())) {
+            return false;
+        }
+
+        // А тут проверяем стратегию
+
+        return true;
     }
 
     /**
@@ -108,12 +171,39 @@ class GameHelper
         return null;
     }
 
+    /**
+     * Выбираем ставку по принципу:
+     * Выбираем максимальные по значению ставки.
+     * Максимум number_rates ставок. Проверяем,
+     * соответствует ли хотябы одна из ставок критерию -
+     * текущее количество денег больше rate_coef * эту ставку.
+     * Выбираем первую подходящую по критерию ставку,
+     * если такой ставки нет, выбираем из всех ставок минимальную.
+     *
+     * @return float|int
+     */
+    public function chooseRate()
+    {
+        $algorithmParamsModel = $this->algorithmParamsModel;
+        $rates = $this->getRatesAsArray();
+        array_multisort($this->getRatesAsArray(), SORT_DESC, SORT_NUMERIC);
+        $maxRates = array_slice($rates,0, $algorithmParamsModel->number_rates);
+
+        foreach ($maxRates as $maxRate) {
+            if ($algorithmParamsModel->amount_start > $algorithmParamsModel->rate_coef * $maxRate) {
+                return $maxRate;
+            }
+        }
+
+        return min($this->getRatesAsArray());
+    }
+
     public function getGame($gameId)
     {
         return Game::findOne(['id' => $gameId]);
     }
 
-    public function getExpectedResultGameSteps(array $quotes)
+    public function setPreparedResultGameSteps(array $quotes)
     {
         $preparedResultGameSteps = [];
         foreach ($quotes as $key => $quote) {
@@ -131,7 +221,66 @@ class GameHelper
             }
         }
 
-        return $preparedResultGameSteps;
+        $this->preparedResultGameSteps = $preparedResultGameSteps;
+    }
+
+    public function getPreparedResultGameSteps(): array
+    {
+        return $this->preparedResultGameSteps;
+    }
+
+    public function getForecast($gameResult, $game): string
+    {
+
+        $preparedResultGameSteps = $this->getPreparedResultGameSteps();
+
+        $forecast = [];
+        for ($numberStep = 1; $numberStep <= $game->number_steps; $numberStep++) {
+           if($numberStep == 1) {
+               $forecast[] = $this->getCurrentStepForecast(AlgorithmTimer::getCurrentTime(), $preparedResultGameSteps);
+           } else {
+               $forecast[] = $this->getCurrentStepForecast(AlgorithmTimer::getDecrementedTime(self::EXPIRATION), $preparedResultGameSteps);
+           }
+        }
+
+        var_dump($preparedResultGameSteps, AlgorithmTimer::getCurrentTime(), $forecast);
+        exit();
+
+        switch ($gameResult){
+            case self::GAME_WIN :
+
+        }
+
+        return $this->getExpectedResultGameSteps();
+    }
+
+    /**
+     * @param string|integer $currentDate
+     * @param array $preparedResultGameSteps
+     * @return array|null
+     */
+    public function getCurrentStepForecast($currentDate, $preparedResultGameSteps)
+    {
+        if(!is_int($currentDate)) {
+            $currentDate = strtotime($currentDate);
+        }
+
+        $items = [];
+        foreach ($preparedResultGameSteps as $time => $stepResult) {
+            $timestamp = strtotime($time);
+            if ($timestamp >= $currentDate) {
+                $items[$timestamp] =  $stepResult;
+            }
+        }
+
+        // Так как прогноза точно на текущее время может не быть, выбираем максимально приближенный по времени прогноз
+        if (!empty($items)) {
+            $minKey = min(array_keys($items));
+
+            return $items[$minKey];
+        }
+
+        return null;
     }
 
     /**
@@ -173,10 +322,17 @@ class GameHelper
                 if ($algorithmParamsModel->amount_start < $algorithmParamsModel->amount_end) {
                     $algorithmParamsModel->k_lucky *= 2;
                 }
-                if ($algorithmParamsModel->amount_start > min($this->getRatesAsArray())) {
+                if ($algorithmParamsModel->amount_start < min($this->getRatesAsArray())) {
                     return false;
                 }
                 break;
+            case 3 :
+                if ($algorithmParamsModel->amount_start > $algorithmParamsModel->amount_end) {
+                    $deviation = $amountEnd + $algorithmParamsModel->deviation_from_amount_end / 100 * $amountEnd;
+                    if ($amountStart >= $amountEnd && $amountStart <= $deviation) {
+                        return false;
+                    }
+                }
         }
 
         return true;
@@ -187,20 +343,20 @@ class GameHelper
     public function checkStrategy()
     {
         $algorithmParamsModel = $this->algorithmParamsModel;
-        $bestStrategy = $this->getBestStrategy();
+        $bestStrategy = $this->getBestStrategiesParams();
         if (!$bestStrategy) {
-            $params = [
-                'algorithm_params_id' => $algorithmParamsModel->id,
-                'timestamp' => AlgorithmTimer::getCurrentTime(),
-                'iteration_number' => $this->iterationNumber,
-                'money_amount' => $algorithmParamsModel->amount_start,
-                'game_id' => $algorithmParamsModel->ga,
-                'rate_amount' => ,
-                'forecast' => ,
-                'result' => ,
-                'best_strategy' => ,
-            ];
-            $strategy = new Strategy($params);
+//            $params = [
+//                'algorithm_params_id' => $algorithmParamsModel->id,
+//                'timestamp' => AlgorithmTimer::getCurrentTime(),
+//                'iteration_number' => $this->iterationNumber,
+//                'money_amount' => $algorithmParamsModel->amount_start,
+//                'game_id' => $algorithmParamsModel->,
+//                'rate_amount' => ,
+//                'forecast' => ,
+//                'result' => ,
+//                'best_strategy' => ,
+//            ];
+//            $strategy = new Strategy($params);
         } else {
 
         }
@@ -211,14 +367,6 @@ class GameHelper
     {
         $strategy = new Strategy($params);
         $strategy->hardSave();
-    }
-
-    /**
-     * @return Strategy|null
-     */
-    public function getBestStrategy()
-    {
-        return Strategy::getBestStrategy();
     }
 
     /**
@@ -264,5 +412,37 @@ class GameHelper
     public function setIterationNumber(int $iterationNumber)
     {
         $this->iterationNumber = $iterationNumber;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCurrentStrategyParams(): array
+    {
+        return $this->currentStrategyParams;
+    }
+
+    /**
+     * @param array $currentStrategyParams
+     */
+    public function setCurrentStrategyParams(array $currentStrategyParams)
+    {
+        $this->currentStrategyParams = $currentStrategyParams;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCheckMoneyNumberStep(): int
+    {
+        return $this->checkMoneyNumberStep;
+    }
+
+    /**
+     * Увеличивает номер этапа проверки денег на 1
+     */
+    public function getIncrementedCheckMoneyNumberStep()
+    {
+        return $this->checkMoneyNumberStep += 1;
     }
 }
