@@ -18,6 +18,10 @@ class KeyValueDataProvider extends BaseDataProvider
      */
     public $decorator;
 
+    /**
+     * @return array|mixed
+     * @throws InvalidConfigException
+     */
     protected function prepareModels()
     {
         if (!$this->query instanceof QueryInterface) {
@@ -39,6 +43,10 @@ class KeyValueDataProvider extends BaseDataProvider
         }
     }
 
+    /**
+     * @param array $models
+     * @return array
+     */
     protected function prepareKeys($models)
     {
         $keys = [];
@@ -50,9 +58,21 @@ class KeyValueDataProvider extends BaseDataProvider
         return $keys;
     }
 
+    /**
+     * @return int
+     */
     protected function prepareTotalCount()
     {
         $query = clone $this->query;
         return $query->count();
+    }
+
+    /**
+     * Отключаем пагинацию
+     * @return bool
+     */
+    public function getPagination()
+    {
+        return false;
     }
 }

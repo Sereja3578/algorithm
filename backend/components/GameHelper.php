@@ -12,6 +12,7 @@ namespace backend\components;
 use common\models\AlgorithmParams;
 use common\models\Game;
 use common\models\Strategy;
+use Faker\Provider\DateTime;
 
 class GameHelper
 {
@@ -229,22 +230,36 @@ class GameHelper
         return $this->preparedResultGameSteps;
     }
 
+    /**
+     * Чтобы получить заранее определенные
+     *
+     * @param int $gameResult
+     * @param Game $game
+     * @return string
+     */
     public function getForecast($gameResult, $game): string
     {
 
         $preparedResultGameSteps = $this->getPreparedResultGameSteps();
 
         $forecast = [];
+        $quoteStartTimestamp = '';
         for ($numberStep = 1; $numberStep <= $game->number_steps; $numberStep++) {
            if($numberStep == 1) {
-               $forecast[] = $this->getCurrentStepForecast(AlgorithmTimer::getCurrentTime(), $preparedResultGameSteps);
+               $currentStepForecast = $this->getCurrentStepForecast(AlgorithmTimer::getCurrentTimestamp(), $preparedResultGameSteps);
+               $quoteStartTimestamp = current(array_keys($currentStepForecast));
+               $forecast[] = $currentStepForecast[$quoteStartTimestamp];
+               var_dump(Date('Y-m-d H:i:s', $quoteStartTimestamp));
            } else {
-               $forecast[] = $this->getCurrentStepForecast(AlgorithmTimer::getDecrementedTime(self::EXPIRATION), $preparedResultGameSteps);
+               $currentStepForecast = $this->getCurrentStepForecast($quoteStartTimestamp - self::EXPIRATION, $preparedResultGameSteps);
+               $quoteStartTimestamp = current(array_keys($currentStepForecast));
+               $forecast[] = $currentStepForecast[$quoteStartTimestamp];
            }
         }
-
-        var_dump($preparedResultGameSteps, AlgorithmTimer::getCurrentTime(), $forecast);
         exit();
+
+//        var_dump($preparedResultGameSteps, AlgorithmTimer::getCurrentTime(), $forecast);
+//        exit();
 
         switch ($gameResult){
             case self::GAME_WIN :
@@ -277,7 +292,7 @@ class GameHelper
         if (!empty($items)) {
             $minKey = min(array_keys($items));
 
-            return $items[$minKey];
+            return [$minKey => $items[$minKey]];
         }
 
         return null;

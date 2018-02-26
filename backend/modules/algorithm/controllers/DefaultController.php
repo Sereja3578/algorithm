@@ -51,9 +51,9 @@ class DefaultController extends Controller
                 // Конечная сумма к которой стремится алгоритм
                 'amount_end' => 200,
                 // Начальное время работы алгоритма < now()
-                't_start' => '2018-01-24 11:00:00',
+                't_start' => '2018-01-24 10:37:33',
                 // По истечению данного времени заканчиваем работу алгоритма < now()
-                't_end' => '2018-01-24 11:00:30',
+                't_end' => '2018-01-24 11:39:33',
                 // Минимальный допустимый процент отклонения текущей суммы от конечной
                 'deviation_from_amount_end' => 1,
                 // Игры, где ключи id игры, а значения шанс шанс выбора игры
@@ -86,12 +86,7 @@ class DefaultController extends Controller
             $gameHelper = new GameHelper($model);
 
             $quotes = $quoteHelper->getQuotes();
-            /*
-             * Устанавливаем начальное время равным минимальному времени котировки максимально приближенной к заданному
-             * начальному времени
-             */
-            $currentQuote = $quoteHelper->getCurrentQuote($model->t_start);
-            AlgorithmTimer::setCurrentTime($currentQuote['timestamp']);
+            AlgorithmTimer::setCurrentTime($model->t_start);
             // Формируем массив с подготовленными результатами игры на каждую секунду
             $gameHelper->setPreparedResultGameSteps($quotes);
 
