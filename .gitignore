@@ -31,19 +31,23 @@ phpunit.phar
 /phpunit.xml
 
 # local configs
-main-local.php
-params-local.php
-test-local.php
+/backend/config/main-local.php
+/backend/config/params-local.php
+/backend/config/test-local.php
+/common/config/main-local.php
+/common/config/params-local.php
+/common/config/test-local.php
+/console/config/main-local.php
+/console/config/params-local.php
+/frontend/config/main-local.php
+/frontend/config/params-local.php
+/frontend/config/test-local.php
 mfd.ini
 prime-config.php
 
 # entry points
 */web/index.php
 */web/index-test.php
-
-# api
-api/web/docs
-api/web/assets
 
 # MySQL Workbench backups
 console/migrations/data/*.mwb.bak
