@@ -1,0 +1,7 @@
+<?php
+
+return [
+    'projectDomain' => '${project.domain}',
+    'projectId' => ${project.id},
+    'buildVersion' => '${build.version}',
+];

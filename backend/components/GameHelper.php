@@ -588,7 +588,10 @@ class GameHelper
     {
         $winCoef = WinCoefHelper::getCurrentCoef(AlgorithmTimer::getCurrentTimestamp());
         $rand = mt_rand(0, 10) / 10;
-        if ($rand >= 0 && $rand <= 1 / $winCoef * $this->algorithmParamsModel->k_lucky) {
+
+        var_dump('winCoef: ' . $winCoef, 'rand: ' . $rand, 'k_lucky: ' . $this->algorithmParamsModel->k_lucky);
+
+        if ($rand > 0 && $rand <= 1 / $winCoef * $this->algorithmParamsModel->k_lucky) {
             return true;
         }
 

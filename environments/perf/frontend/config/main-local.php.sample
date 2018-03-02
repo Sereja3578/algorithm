@@ -1,0 +1,20 @@
+<?php
+
+$config = [
+    'components' => [
+        'request' => [
+            'cookieValidationKey' => 'dff105e6i0a5p99od608e0edeeu6c8ya8774194cd6797166d348fbf1abc5b0'
+        ],
+        'log' => [
+           'traceLevel' => YII_DEBUG ? 3 : 0,
+           'targets' => [
+                [
+                    'class' => 'yii\log\FileTarget',
+                    'levels' => ['error', 'warning'],
+                ],
+           ],
+        ],
+    ],
+];
+
+return $config;

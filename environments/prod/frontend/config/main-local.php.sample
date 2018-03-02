@@ -1,0 +1,21 @@
+<?php
+
+$config = [
+    'components' => [
+        'request' => [
+            'cookieValidationKey' => 'ab418b7cd9oede6ye8fec15fdd3aib40160f5d50cu06a996867p16409f78e7'
+        ],
+        'log' => [
+           'traceLevel' => YII_DEBUG ? 3 : 0,
+           'targets' => [
+                [
+                    'class' => 'yii\log\FileTarget',
+                    'levels' => ['error', 'warning'],
+                    'logFile' => '/var/log/algorithm/algorithm-frontend.log'
+                ],
+           ],
+        ],
+    ],
+];
+
+return $config;

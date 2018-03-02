@@ -1,0 +1,7 @@
+<?php
+
+return [
+    'cookieDomain' => '${algorithm.cookieDomain}',
+    'hostDomain' => '${algorithm.hostUrl}',
+    'appUrl' => 'https://${algorithm.appUrl}',
+];

@@ -1,0 +1,23 @@
+<?php
+
+$config = [
+    'components' => [
+        'request' => [
+            'cookieValidationKey' => '1ffh9c710de7b8dfacddt1630974646a357c0bf9687bf14d4e5560f50efbbre1'
+        ],
+        'mailer' => [
+            'viewPath' => '@backend/mail',
+        ],
+        'log' => [
+           'traceLevel' => YII_DEBUG ? 3 : 0,
+           'targets' => [
+                [
+                    'class' => 'yii\log\FileTarget',
+                    'levels' => ['error', 'warning'],
+                ],
+           ],
+        ],
+    ],
+];
+
+return $config;

@@ -1,0 +1,63 @@
+<?php
+$config = [
+    'name' => '${project.name}',
+    'components' => [
+        'db' => [
+            'class' => 'yii\db\Connection',
+            'dsn' => 'mysql:host=127.0.0.1;port=3306;dbname=$(db.database)',
+            'username' => '$(db.username)',
+            'password' => '$(db.password)',
+            'charset' => 'utf8',
+            'enableSchemaCache' => true,
+            'on afterOpen' => function (yii\base\Event $event) {
+                /* @var $db yii\db\Connection */
+                $db = $event->sender;
+                $db->createCommand('SET time_zone = :timeZone;', ['timeZone' => date('P')])->execute();
+            }
+        ],
+        'mailer' => [
+            'class' => 'yii\swiftmailer\Mailer',
+            'viewPath' => '@common/mail',
+            'useFileTransport' => true,
+        ],
+        'pureRedisQuotes' => function () {
+            $redis = new \Redis;
+            if (!$redis->connect('$(pureRedisQuotes.host)', '$(pureRedisQuotes.port)')) {
+                throw new \RedisException('Can not connect.');
+            }
+            $password = '$(pureRedisQuotes.password)';
+            if ($password && !$redis->auth($password)) {
+                throw new \RedisException('Can not authenticate.');
+            }
+            if (!$redis->select(intval('$(pureRedisQuotes.database)'))) {
+                throw new \RedisException('Can not select database.');
+            }
+            return $redis;
+        },
+    ],
+];
+
+if (YII_ENV_DEV) {
+    // configuration adjustments for 'dev' environment
+    $config['bootstrap'][] = 'debug';
+    $config['modules']['debug'] = [
+        'class' => 'yii\debug\Module',
+        'allowedIPs' => ['127.0.0.1', '192.168.33.1', '::1', '93.100.216.138']
+    ];
+
+    $config['bootstrap'][] = 'gii';
+    $config['modules']['gii'] = [
+        'class' => 'yii\gii\Module',
+        'allowedIPs' => ['127.0.0.1', '192.168.33.1', '::1', '*'],
+        'generators' => [
+            'crud' => [
+                'class' => 'yii\gii\generators\crud\Generator',
+                'templates' => [
+                    'adminlte' => '@vendor/dmstr/yii2-adminlte-asset/gii/templates/crud/simple',
+                ]
+            ]
+        ],
+    ];
+}
+
+return $config;

@@ -26,14 +26,20 @@ class AlgorithmParams extends AlgorithmParamsBase
      */
     public $rates;
 
+    /**
+     * @var int
+     */
+    public $use_fake_coefs;
+
     public function rules()
     {
         return [
+            [['use_fake_coefs'], 'integer'],
             [[
                 'iterations',
                 'asset_id',
                 't_next_start_game',
-                'number_rates'
+                'number_rates',
             ], 'integer', 'min' => 0],
             [[
                 'k_lucky',

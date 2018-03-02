@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'components' => [
+        'request' => [
+            'cookieValidationKey' => 'b3073d64f4e83f0b234e13ff246fe38e3265078f61d918f930bf913be4fb5666'
+        ],
+        'log' => [
+            'traceLevel' => YII_DEBUG ? 3 : 0,
+            'targets' => [
+                [
+                    'class' => 'yii\log\FileTarget',
+                    'levels' => ['error', 'warning'],
+                    'logFile' => '/var/log/algorithm/algorithm-backend.log'
+                ],
+            ],
+        ],
+        'mailer' => [
+            'viewPath' => '@backend/mail',
+        ],
+        'user' => [
+            'enableAutoLogin' => false,
+        ],
+    ]
+];

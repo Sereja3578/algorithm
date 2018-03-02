@@ -45,7 +45,7 @@ class DefaultController extends Controller
                 // Итераций главного цикла - одна итерация имитирует действия одного игрока
                 'iterations' => 20,
                 // Коэффициент удачливости игрока
-                'k_lucky' => 1.3,
+                'k_lucky' => 5.7,
                 // Валютная пара по которй вытаскиваем котировки
                 'asset_id' => 1,
                 // Начальная сумма > t_ends
@@ -53,9 +53,9 @@ class DefaultController extends Controller
                 // Конечная сумма к которой стремится алгоритм
                 'amount_end' => 200,
                 // Начальное время работы алгоритма < now()
-                't_start' => '2018-02-1 20:43',
+                't_start' => '2018-01-24 10:37',
                 // По истечению данного времени заканчиваем работу алгоритма < now()
-                't_end' => '2018-02-28 20:48',
+                't_end' => '2018-01-24 20:48',
                 // Минимальный допустимый процент отклонения текущей суммы от конечной
                 'deviation_from_amount_end' => 20,
                 // Игры, где ключи id игры, а значения шанс шанс выбора игры
@@ -92,6 +92,7 @@ class DefaultController extends Controller
             $gameHelper = new GameHelper($cloneAlgorithmParams);
 
             $quotes = $quoteHelper->getQuotes();
+
             // Формируем массив с подготовленными результатами игры на каждую секунду
             $gameHelper->setPreparedResultGameSteps($quotes);
 
