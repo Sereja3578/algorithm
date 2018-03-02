@@ -17,6 +17,11 @@ class AlgorithmTimer
     private static $currentTime;
 
     /**
+     * @var int
+     */
+    private static $endTime;
+
+    /**
      * @return string
      */
     public static function getCurrentTime() : string
@@ -66,6 +71,41 @@ class AlgorithmTimer
     public static function getDecrementedTime(int $decrement): string
     {
         return date('Y-m-d H-i:s', self::$currentTime - $decrement);
+    }
+
+    /**
+     * @return string
+     */
+    public static function getEndTime(): string
+    {
+        return  date('Y-m-d H-i:s', self::$endTime);
+    }
+
+    /**
+     * @return int
+     */
+    public static function getEndTimestamp(): int
+    {
+        return  self::$endTime;
+    }
+
+    /**
+     * @param string $endTime
+     */
+    public static function setEndTime(string $endTime): void
+    {
+        self::$endTime = strtotime($endTime);
+    }
+
+    /**
+     * @return bool
+     */
+    public static function checkTime()
+    {
+        if (self::$currentTime < self::$endTime) {
+            return true;
+        }
+        return false;
     }
 }
 

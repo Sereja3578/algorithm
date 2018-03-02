@@ -57,11 +57,13 @@ class QuoteChunkSearch extends KeyValue
             $range[0] += self::CHUNK_SIZE;
         }
 
-//        var_dump($range);
-//        exit();
+
 
         return new KeyValueDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => -1,
+            ],
             'decorator' => function ($data) {
                 return array_map(function ($line) {
                     $row = explode(',', $line);
@@ -103,6 +105,7 @@ class QuoteChunkSearch extends KeyValue
     public function getChunk($date)
     {
         $date = new \DateTime($date);
+        $date->setTimezone(new \DateTimeZone('+0000'));
         $unixTime = $date->getTimestamp();
         $modulo = $unixTime % self::CHUNK_SIZE;
         if ($modulo === 0) {

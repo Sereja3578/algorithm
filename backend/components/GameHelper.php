@@ -13,6 +13,7 @@ use common\models\AlgorithmParams;
 use common\models\Game;
 use common\models\Strategy;
 use Faker\Provider\DateTime;
+use yii\boost\base\InvalidModelException;
 
 class GameHelper
 {
@@ -52,6 +53,11 @@ class GameHelper
     public $currentStrategyParams;
 
     /**
+     * @var array
+     */
+    public $bestStrategyParams;
+
+    /**
      * @var int
      */
     public $checkMoneyNumberStep = 1;
@@ -70,36 +76,87 @@ class GameHelper
         $this->algorithmParamsModel = $algorithmParamsModel;
     }
 
+    /**
+     * @param $iterationNumber
+     * @return bool|Strategy
+     */
     public function playerSimulation($iterationNumber)
     {
-        $this->setIterationNumber($iterationNumber);
+        var_dump('Algorithm started to simulate user activity and current time is ' . AlgorithmTimer::getCurrentTime());
+
+        var_dump('first game was played: ' . $this->firstGamePlayed);
+
+        if(!AlgorithmTimer::checkTime()) {
+            return false;
+        }
+
+        var_dump(AlgorithmTimer::getCurrentTime() . " < " . AlgorithmTimer::getEndTime());
+
         $algorithmParamsModel = $this->algorithmParamsModel;
+        $this->setIterationNumber($iterationNumber);
 
+        /*
+        * Если не прошел проверку, то сохраняем стратегию и выходим из игры,
+        * при этом игра считается проигранной.
+        */
         if (!$this->checkMoney($this->getCheckMoneyNumberStep())) {
+            var_dump('The game: ' . $this->currentStrategyParams['game_id'] . ' was finished with result');
+
+            return $this->getBestStrategy($this->currentStrategyParams);
+        }
+
+        var_dump('User has gone ' . $this->getCheckMoneyNumberStep() . ' money check');
+
+        $this->decreaseLucky();
+
+        // Тут сравниваем текущую стратегию после проигрыша или выигрыша с лучшей стратегией
+        if($this->firstGamePlayed) {
+            if($this->checkStrategy()){
+                $strategyParams = $this->getCurrentStrategyParams();
+                $this->setBestStrategyParams($strategyParams);
+
+                var_dump('The game: ' . $strategyParams['game_id'] . ' was finished without result');
+                var_dump('But we have new best strategy: ', $this->currentStrategyParams);
+            };
+        }
+
+        if (!$this->checkMoney($this->getNexCheckMoneyNumberStep())) {
             return false;
         }
 
-//        if($this->isFirstGamePlayed()) {
-//            $this->checkStrategy();
-//        }
-
-        if (!$this->checkMoney($this->getIncrementedCheckMoneyNumberStep())) {
-            return false;
-        }
+        var_dump('User has gone ' . $this->getCheckMoneyNumberStep() . ' money check');
 
         if ($this->playGameOrNotPlay()) {
-            $gameId = $this->chooseGameByChance(unserialize($algorithmParamsModel->games));
+
+            var_dump('User decided to play in game');
+
+            $gameId = $this->chooseGameByChance($this->getGamesAsArray());
             $game = $this->getGame($gameId);
 
-            if ($game) {
-                if(!$this->startGame($game)) {
-                    return false;
-                }
-            }
+            var_dump('User has choosen game: ' . $gameId);
 
+            if ($game) {
+                $result = $this->startGame($game);
+                if(!$result) {
+                    return false;
+                } elseif ($result instanceof Strategy) {
+                    return $result;
+                }
+                $this->firstGamePlayed = true;
+            }
         }
 
-        return true;
+        // Следующая игра начинается через заданное время (как и везде, время только имитируется)
+        AlgorithmTimer::incrementCurrentTime($algorithmParamsModel->t_next_start_game);
+        // Сбрасываем номер этапа вроверки денег
+        $this->resetCheckMoneyNumberStep();
+        /*
+         * Функция будет выполняться до тех пор, пока не будет достигнут результат
+         * или не кончится время.
+         */
+        $this->playerSimulation($iterationNumber);
+
+        return false;
     }
 
     /**
@@ -109,12 +166,16 @@ class GameHelper
      * если оно больше чем money_end, то проверяем
      *
      * @param $game
-     * @return bool
+     * @return bool|Strategy
      */
     public function startGame($game)
     {
+
+        var_dump('User started to play in the game');
+
         $algorithmParamsModel = $this->algorithmParamsModel;
         $rate = $this->chooseRate();
+        var_dump('User has choosen rate: ' . $rate);
         $algorithmParamsModel->amount_start -= $rate;
 
         /*
@@ -123,34 +184,166 @@ class GameHelper
         */
         AlgorithmTimer::incrementCurrentTime($game->number_steps * self::EXPIRATION);
 
-        // @todo реализовать определение результата игры
-        // Теперь решаем выиграл игрок или проиграл.
-
-        // @todo получить прогноз.
-        $forecast = $this->getForecast(1, $game);
-
-        // После того, как игра сыграна, устанавливаем параметры текущей стратегии
-//        $currentStrategyParams = [
-//            'algorithm_params_id' => $algorithmParamsModel->id,
-//            'timestamp' => AlgorithmTimer::getCurrentTime(),
-//            'iteration_number' => $this->iterationNumber,
-//            'money_amount' => $algorithmParamsModel->amount_start,
-//            'game_id' => $game->id,
-//            'rate_amount' => ,
-//            'forecast' => ,
-//            'result' => ,
-//            'best_strategy' => ,
-//        ];
-//        $this->setCurrentStrategyParams($currentStrategyParams);
-
-        // Проверяем деньги и действуем исходя из результата-проверки
-        if (!$this->checkMoney($this->getIncrementedCheckMoneyNumberStep())) {
+        if(!AlgorithmTimer::checkTime()) {
             return false;
         }
 
-        // А тут проверяем стратегию
+        var_dump('Here was imitated play activity and current time now is: ' . AlgorithmTimer::getCurrentTime());
+
+        /*
+         * Если не прошел проверку, то сохраняем стратегию и выходим из игры,
+         * при этом игра считается проигранной.
+         */
+        if (!$this->checkMoney($this->getNexCheckMoneyNumberStep())) {
+
+            var_dump('The game: ' . $game->id . ' was finished with result');
+
+            return $this->getBestStrategy($rate, $game);
+        }
+
+        var_dump('User has gone ' . $this->getCheckMoneyNumberStep() . ' money check');
+
+        if($this->firstGamePlayed) {
+            if($this->checkStrategy()){
+                $forecast = $this->getForecast(self::GAME_FAILED, $game);
+                $strategyParams = [
+                    'timestamp' => AlgorithmTimer::getCurrentTimestamp(),
+                    'iteration_number' => $this->iterationNumber,
+                    'money_amount' => $algorithmParamsModel->amount_start,
+                    'game_id' => $game->id,
+                    'rate_amount' => $rate,
+                    'forecast' => $forecast,
+                    'result' => self::GAME_FAILED,
+                    'best_strategy' => Strategy::BEST_STRATEGY,
+                ];
+                $this->setBestStrategyParams($strategyParams);
+
+                var_dump('The game: ' . $game->id . ' was finished without result');
+                var_dump('But we have new best strategy: ', $this->bestStrategyParams);
+
+                return true;
+            };
+        }
+
+        var_dump('User has not gone check strategy, so we just continue to play');
+
+        $gameResult = $this->isWin();
+
+        // Если победил, увеличиваем деньги игрока
+        if ($gameResult) {
+            $winCoef = WinCoefHelper::getCurrentCoef(AlgorithmTimer::getCurrentTimestamp());
+            $algorithmParamsModel->amount_start += $rate * $winCoef;
+        }
+
+        $forecast = $this->getForecast($gameResult, $game);
+        $currentStrategyParams = [
+            'timestamp' => AlgorithmTimer::getCurrentTimestamp(),
+            'iteration_number' => $this->iterationNumber,
+            'money_amount' => $algorithmParamsModel->amount_start,
+            'game_id' => $game->id,
+            'rate_amount' => $rate,
+            'forecast' => $forecast,
+            'result' => $gameResult ? self::GAME_WIN : self::GAME_FAILED,
+            'best_strategy' => Strategy::BEST_STRATEGY,
+        ];
+
+        if($this->firstGamePlayed) {
+            $this->setCurrentStrategyParams($currentStrategyParams);
+        } else {
+            // При первой игре текущие параметры являются и лучшими
+            $this->setCurrentStrategyParams($currentStrategyParams);
+            $this->setBestStrategyParams($currentStrategyParams);
+        }
+
+        var_dump('User finished to play game: ' . $game->id . ' was finished without result');
+        var_dump('But we have new current strategy: ', $this->currentStrategyParams);
 
         return true;
+    }
+
+    /**
+     * @param array $currentStrategyParams
+     * @param float $rate
+     * @param Game $game
+     * @return Strategy
+     */
+    public function getBestStrategy($currentStrategyParams = null, $rate = null, $game = null) {
+
+        if($currentStrategyParams) {
+            var_dump('Saving best strategy for game: ' . $currentStrategyParams['game_id'] . ' as failed game');
+            $strategyParams = $currentStrategyParams;
+        } else {
+            var_dump('Saving best strategy for game: ' . $game->id . ' as failed game');
+            $algorithmParamsModel = $this->algorithmParamsModel;
+            $forecast = $this->getForecast(self::GAME_FAILED, $game);
+
+            $strategyParams = [
+                'timestamp' => AlgorithmTimer::getCurrentTimestamp(),
+                'iteration_number' => $this->iterationNumber,
+                'money_amount' => $algorithmParamsModel->amount_start,
+                'game_id' => $game->id,
+                'rate_amount' => $rate,
+                'forecast' => $forecast,
+                'result' => self::GAME_FAILED,
+                'best_strategy' => Strategy::BEST_STRATEGY,
+            ];
+        }
+
+        return new Strategy($strategyParams);
+    }
+
+    /**
+     * @return array
+     */
+    public function getBestStrategyParams(): array
+    {
+        return $this->bestStrategyParams;
+    }
+
+    /**
+     * @param array $bestStrategyParams
+     */
+    public function setBestStrategyParams(array $bestStrategyParams): void
+    {
+        $this->bestStrategyParams = $bestStrategyParams;
+    }
+
+    public function checkStrategy()
+    {
+        $algorithmParamsModel = $this->algorithmParamsModel;
+        $currentMoney = $algorithmParamsModel->amount_start;
+        $endMoney = $algorithmParamsModel->amount_end;
+
+        /*
+         * Для приближения сверху, стратегия будет верна, если текущее число станет меньше чем предыдущее.
+         * Таким образом получится, что если конечная сумма должна быть 70, текущее число днеге
+         * после ставки стало 72, а до ставки было 73, то мы приблизились ближе к цели,
+         * и эта стратегия лучше. Но так как 70 - 72 больше чем 70 - 73,
+         * то нужно сравнивать по модулю.
+         */
+        $currentApproximation = ($endMoney - $currentMoney > 0) ? $endMoney - $currentMoney : ($endMoney - $currentMoney) * -1 ;
+        $previewApproximation = ($endMoney - $this->bestStrategyParams['money_amount'] > 0) ?
+            $endMoney - $this->bestStrategyParams['money_amount'] :
+            ($endMoney - $this->bestStrategyParams['money_amount']) * -1 ;
+
+        var_dump('current approximation: ' . $currentApproximation);
+        var_dump('preview approximation: ' . $previewApproximation);
+
+        if ($currentApproximation < $previewApproximation) {
+            var_dump('The check of strategy was completed');
+            return true;
+        }
+        var_dump('The check of strategy was not completed');
+        return false;
+    }
+
+    /**
+     * @param Strategy $strategy
+     * @throws InvalidModelException
+     */
+    public function saveStrategy(Strategy $strategy)
+    {
+        $strategy->save();
     }
 
     /**
@@ -187,7 +380,7 @@ class GameHelper
     {
         $algorithmParamsModel = $this->algorithmParamsModel;
         $rates = $this->getRatesAsArray();
-        array_multisort($this->getRatesAsArray(), SORT_DESC, SORT_NUMERIC);
+        array_multisort($rates, SORT_DESC, SORT_NUMERIC);
         $maxRates = array_slice($rates,0, $algorithmParamsModel->number_rates);
 
         foreach ($maxRates as $maxRate) {
@@ -235,38 +428,34 @@ class GameHelper
      *
      * @param int $gameResult
      * @param Game $game
-     * @return string
+     * @return array
      */
-    public function getForecast($gameResult, $game): string
+    public function getForecast($gameResult, $game): array
     {
-
         $preparedResultGameSteps = $this->getPreparedResultGameSteps();
 
         $forecast = [];
-        $quoteStartTimestamp = '';
+        $approximateQuoteTime = '';
         for ($numberStep = 1; $numberStep <= $game->number_steps; $numberStep++) {
            if($numberStep == 1) {
                $currentStepForecast = $this->getCurrentStepForecast(AlgorithmTimer::getCurrentTimestamp(), $preparedResultGameSteps);
-               $quoteStartTimestamp = current(array_keys($currentStepForecast));
-               $forecast[] = $currentStepForecast[$quoteStartTimestamp];
-               var_dump(Date('Y-m-d H:i:s', $quoteStartTimestamp));
+               $approximateQuoteTime = current(array_keys($currentStepForecast));
+               $forecast[] = $currentStepForecast[$approximateQuoteTime];
            } else {
-               $currentStepForecast = $this->getCurrentStepForecast($quoteStartTimestamp - self::EXPIRATION, $preparedResultGameSteps);
-               $quoteStartTimestamp = current(array_keys($currentStepForecast));
-               $forecast[] = $currentStepForecast[$quoteStartTimestamp];
+               $previewStepTime = $approximateQuoteTime - self::EXPIRATION;
+               $currentStepForecast = $this->getCurrentStepForecast($previewStepTime, $preparedResultGameSteps);
+               $approximateQuoteTime = current(array_keys($currentStepForecast));
+               $forecast[] = $currentStepForecast[$approximateQuoteTime];
            }
         }
-        exit();
-
-//        var_dump($preparedResultGameSteps, AlgorithmTimer::getCurrentTime(), $forecast);
-//        exit();
 
         switch ($gameResult){
             case self::GAME_WIN :
-
+                return array_reverse($forecast);
+            case self::GAME_FAILED :
+                shuffle($forecast);
+                return $forecast;
         }
-
-        return $this->getExpectedResultGameSteps();
     }
 
     /**
@@ -288,7 +477,11 @@ class GameHelper
             }
         }
 
-        // Так как прогноза точно на текущее время может не быть, выбираем максимально приближенный по времени прогноз
+        /*
+         * Так как прогноза точно на текущее время может не быть,
+         * выбираем максимально приближенный по времени прогноз
+         *
+         */
         if (!empty($items)) {
             $minKey = min(array_keys($items));
 
@@ -303,7 +496,7 @@ class GameHelper
      */
     public function playGameOrNotPlay()
     {
-        $rand = mt_rand(0, 1);
+        $rand = mt_rand(0, 10) / 10;
 
         if ($rand >= $this->algorithmParamsModel->probability_play) {
             return true;
@@ -325,22 +518,20 @@ class GameHelper
 
         switch ($numberStepOfCheck) {
             case 1 :
-                $deviation = $amountEnd + $algorithmParamsModel->deviation_from_amount_end / 100 * $amountEnd;
-                if ($amountStart >= $amountEnd && $amountStart <= $deviation) {
-                    return false;
+                if ($algorithmParamsModel->amount_start > $algorithmParamsModel->amount_end) {
+                    $deviation = $amountEnd + $algorithmParamsModel->deviation_from_amount_end / 100 * $amountEnd;
+                    if ($amountStart >= $amountEnd && $amountStart <= $deviation) {
+                        return false;
+                    }
                 }
-                if ($algorithmParamsModel->k_lucky > 1) {
-                    $algorithmParamsModel->k_lucky /= 2;
-                }
-                break;
+                return true;
             case 2 :
-                if ($algorithmParamsModel->amount_start < $algorithmParamsModel->amount_end) {
-                    $algorithmParamsModel->k_lucky *= 2;
-                }
                 if ($algorithmParamsModel->amount_start < min($this->getRatesAsArray())) {
                     return false;
+                } elseif ($algorithmParamsModel->amount_start < $algorithmParamsModel->amount_end) {
+                    $this->increaseLucky();
                 }
-                break;
+                return true;
             case 3 :
                 if ($algorithmParamsModel->amount_start > $algorithmParamsModel->amount_end) {
                     $deviation = $amountEnd + $algorithmParamsModel->deviation_from_amount_end / 100 * $amountEnd;
@@ -348,40 +539,30 @@ class GameHelper
                         return false;
                     }
                 }
+                return true;
         }
 
         return true;
     }
 
-    //@todo доработать (вынести сохранение текущей стратегии в массив, а не в базу)
-    //@todo а в базу сохранять только по достижении результата.
-    public function checkStrategy()
-    {
-        $algorithmParamsModel = $this->algorithmParamsModel;
-        $bestStrategy = $this->getBestStrategiesParams();
-        if (!$bestStrategy) {
-//            $params = [
-//                'algorithm_params_id' => $algorithmParamsModel->id,
-//                'timestamp' => AlgorithmTimer::getCurrentTime(),
-//                'iteration_number' => $this->iterationNumber,
-//                'money_amount' => $algorithmParamsModel->amount_start,
-//                'game_id' => $algorithmParamsModel->,
-//                'rate_amount' => ,
-//                'forecast' => ,
-//                'result' => ,
-//                'best_strategy' => ,
-//            ];
-//            $strategy = new Strategy($params);
-        } else {
-
-        }
+    /**
+     * Увеличивает коэффициент удачливости игрока вдвое
+     */
+    public function increaseLucky(){
+        var_dump('k_lucky before increase: ' . $this->algorithmParamsModel->k_lucky);
+        $this->algorithmParamsModel->k_lucky *= 2;
+        var_dump('k_lucky after increase: ' . $this->algorithmParamsModel->k_lucky);
     }
 
-    //@todo доработать
-    public function saveStrategy($params)
-    {
-        $strategy = new Strategy($params);
-        $strategy->hardSave();
+    /**
+     * Уменьшает коэффициент удачливости игрока вдвое
+     */
+    public function decreaseLucky(){
+        if ($this->algorithmParamsModel->k_lucky > 1) {
+            var_dump('k_lucky before decrease: ' . $this->algorithmParamsModel->k_lucky);
+            $this->algorithmParamsModel->k_lucky /= 2;
+            var_dump('k_lucky after derease: ' . $this->algorithmParamsModel->k_lucky);
+        }
     }
 
     /**
@@ -400,9 +581,18 @@ class GameHelper
         $this->firstGamePlayed = $firstGamePlayed;
     }
 
-    public function isWin()
+    /**
+     * @return bool
+     */
+    public function isWin(): bool
     {
-        //@todo реализовать определение выиграл игрок или нет и соответствующие поведения
+        $winCoef = WinCoefHelper::getCurrentCoef(AlgorithmTimer::getCurrentTimestamp());
+        $rand = mt_rand(0, 10) / 10;
+        if ($rand >= 0 && $rand <= 1 / $winCoef * $this->algorithmParamsModel->k_lucky) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -410,7 +600,7 @@ class GameHelper
      */
     public function getGamesAsArray(): array
     {
-        return explode(', ', $this->algorithmParamsModel->games);
+        return unserialize($this->algorithmParamsModel->games);
     }
 
     /**
@@ -456,8 +646,15 @@ class GameHelper
     /**
      * Увеличивает номер этапа проверки денег на 1
      */
-    public function getIncrementedCheckMoneyNumberStep()
+    public function getNexCheckMoneyNumberStep()
     {
         return $this->checkMoneyNumberStep += 1;
+    }
+
+    /**
+     * Сбрасывает номер этапа проверки денег
+     */
+    public function resetCheckMoneyNumberStep() {
+        $this->checkMoneyNumberStep = 1;
     }
 }

@@ -66,13 +66,4 @@ class KeyValueDataProvider extends BaseDataProvider
         $query = clone $this->query;
         return $query->count();
     }
-
-    /**
-     * Отключаем пагинацию
-     * @return bool
-     */
-    public function getPagination()
-    {
-        return false;
-    }
 }

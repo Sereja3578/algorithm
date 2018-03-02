@@ -33,6 +33,7 @@ class AlgorithmParams extends ActiveFixture
         'number_rates' => '',
         'rate_coef' => '',
         'probability_play' => '',
+        'use_fake_coefs' => '',
         'created_at' => '',
         'updated_at' => ''
     ]*/

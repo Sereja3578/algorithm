@@ -29,7 +29,7 @@ class KeyValueQuery extends Component implements ActiveQueryInterface
      * @var string
      */
     private $command;
-    
+
     public $where = [];
 
     public function __construct($modelClass, $config = [])
@@ -173,7 +173,10 @@ class KeyValueQuery extends Component implements ActiveQueryInterface
     protected function getRange($key)
     {
         $end = $this->offset + $this->limit - 1;
-        return $this->getDb()->lRange($key, (int)$this->offset, $end) ?: [];
+        if ($this->limit <= 0) {
+            $end = -1;
+        }
+        return $this->getDb()->lRange($key, (int)$this->offset, -1) ?: [];
     }
 
     protected function getDb()

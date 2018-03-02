@@ -25,6 +25,7 @@ use common\models\Strategy;
  * @property integer $number_rates
  * @property double $rate_coef
  * @property double $probability_play
+ * @property integer $use_fake_coefs
  * @property string $created_at
  * @property string $updated_at
  *
@@ -49,9 +50,7 @@ class AlgorithmParamsBase extends \common\components\ActiveRecord
         return [
             [[
                 'iterations',
-                'asset_id',
-                't_next_start_game',
-                'number_rates'
+                'asset_id'
             ], 'integer', 'min' => 0],
             [[
                 'k_lucky',
@@ -81,6 +80,9 @@ class AlgorithmParamsBase extends \common\components\ActiveRecord
             ], 'match', 'pattern' => '~^\d{1,15}(?:\.\d{1,8})?$~'],
             [['asset_id', 'amount_start', 'amount_end', 'games', 'rates'], 'required'],
             [['games', 'rates'], 'string', 'max' => 255],
+            [['t_next_start_game'], 'string', 'max' => 3],
+            [['number_rates'], 'string', 'max' => 2],
+            [['use_fake_coefs'], 'string', 'max' => 1],
             [['asset_id'], 'exist', 'skipOnError' => true, 'targetClass' => Asset::className(), 'targetAttribute' => ['asset_id' => 'id']],
             [[
                 't_start',
@@ -96,7 +98,10 @@ class AlgorithmParamsBase extends \common\components\ActiveRecord
             ], 'default', 'value' => '1'],
             [['t_next_start_game'], 'default', 'value' => '5'],
             [['number_rates'], 'default', 'value' => '2'],
-            [['probability_play'], 'default', 'value' => '0'],
+            [[
+                'probability_play',
+                'use_fake_coefs'
+            ], 'default', 'value' => '0'],
         ];
     }
 
@@ -121,6 +126,7 @@ class AlgorithmParamsBase extends \common\components\ActiveRecord
             'number_rates' => Yii::t('models', 'Максимальное число ставок'),
             'rate_coef' => Yii::t('models', 'Коэффициент повышения ставки'),
             'probability_play' => Yii::t('models', 'Вероятность начала игры'),
+            'use_fake_coefs' => Yii::t('models', 'Использовать фейковые коэффициенты'),
             'created_at' => Yii::t('models', 'Создано в'),
             'updated_at' => Yii::t('models', 'Обновленов в'),
         ];
