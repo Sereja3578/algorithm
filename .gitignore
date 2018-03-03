@@ -42,4 +42,5 @@ test-local.php
 # MySQL Workbench backups
 console/migrations/data/*.mwb.bak
 
-
+# Exclude vagrant
+/vagrant
