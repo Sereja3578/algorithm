@@ -18,7 +18,7 @@ $config = [
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
             'viewPath' => '@common/mail',
-            'useFileTransport' => true,
+            'useFileTransport' => $(mailer.useFileTransport),
         ],
         'pureRedisQuotes' => function () {
             $redis = new \Redis;
@@ -34,6 +34,14 @@ $config = [
             }
             return $redis;
         },
+        'amqp' => [
+            'host' => '${amqp.host}',
+            'port' => intval('${amqp.port}'),
+            'vhost' => '${amqp.vhost}',
+            'login' => '${amqp.login}',
+            'password' => '${amqp.password}',
+            //'delayQueueUsage' => true
+        ]
     ],
 ];
 

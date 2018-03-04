@@ -16,12 +16,8 @@
         </phingcall>
         <phingcall target="flush-cache"/>
         <phingcall target="migrate"/>
-        <phingcall target="migrate-quotes"/>
-        <phingcall target="migrate-stats"/>
-        <phingcall target="reports-init"/>
         <!--<phingcall target="migrate-test"/>-->
         <phingcall target="models-generate"/>
-        <phingcall target="gen-docs"/>
         <echo msg="Development build done"/>
     </target>
 
@@ -39,7 +35,6 @@
         <phingcall target="yii-init">
             <property name="env" value="Dev"/>
         </phingcall>
-        <phingcall target="onesky-export"/>
         <phingcall target="package"/>
         <echo msg="Dev build done"/>
     </target>
@@ -58,8 +53,6 @@
         <phingcall target="yii-init">
             <property name="env" value="Stage"/>
         </phingcall>
-        <phingcall target="gen-docs"/>
-        <phingcall target="onesky-export"/>
         <phingcall target="package"/>
         <echo msg="Stage build done"/>
     </target>
@@ -78,7 +71,6 @@
         <phingcall target="yii-init">
             <property name="env" value="RC"/>
         </phingcall>
-        <phingcall target="onesky-export"/>
         <phingcall target="package"/>
         <echo msg="Production build done"/>
     </target>
@@ -98,7 +90,6 @@
         <phingcall target="yii-init">
             <property name="env" value="Perf"/>
         </phingcall>
-        <phingcall target="onesky-export"/>
         <phingcall target="package"/>
         <echo msg="Production build done"/>
     </target>
@@ -117,15 +108,17 @@
         <phingcall target="yii-init">
             <property name="env" value="Production"/>
         </phingcall>
-        <phingcall target="onesky-export"/>
         <phingcall target="package"/>
         <echo msg="Production build done"/>
     </target>
 
+
+
     <target name="configure">
-        <property name="apps" value="backend,common,console,frontend"/>
+        <property name="apps" value="api,backend,common,console,frontend"/>
         <foreach list="${apps}" param="app" target="configure-app"/>
     </target>
+
     <target name="configure-app">
         <copy file="environments/${configure.destination}/${app}/config/main-local.php.sample"
               tofile="environments/${configure.destination}/${app}/config/main-local.php" overwrite="true">
@@ -140,6 +133,8 @@
             </filterchain>
         </copy>
     </target>
+
+
 
     <target name="configure-test">
         <property name="apps" value="api,backend,common,frontend"/>
@@ -172,27 +167,12 @@
         <exec passthru="true" command="php ./yii rbac/init --interactive=0"/>
         <exec passthru="true" command="php ./yii migrate --interactive=0"/>
     </target>
-    <target name="migrate-quotes">
-        <exec passthru="true" command="php ./yii migrate-quotes --interactive=0"/>
-    </target>
-    <target name="migrate-stats">
-        <exec passthru="true" command="php ./yii migrate-stats --interactive=0"/>
-    </target>
-    <target name="reports-init">
-        <exec passthru="true" command="php ./yii reports-init --interactive=0"/>
-    </target>
+
     <target name="models-generate">
         <exec passthru="true" command="./generate"/>
     </target>
     <target name="migrate-test">
         <exec passthru="true" command="php ./yii_test migrate --interactive=0"/>
-    </target>
-
-    <target name="gen-docs">
-        <exec passthru="true"
-              command="php ./vendor/bin/apidoc api api/modules/v1/controllers,api/dto,api/dic ./api/web/docs/api --guide=../guide --guidePrefix= --pageTitle='API Docs' --interactive=0"/>
-        <exec passthru="true"
-              command="php ./vendor/bin/apidoc guide api/docs ./api/web/docs/guide --apiDocs=../api --guidePrefix= --pageTitle='API Docs' --interactive=0"/>
     </target>
 
     <target name="flush-cache">
@@ -203,14 +183,12 @@
         <exec passthru="true" command="vendor/bin/codecept build"/>
         <exec passthru="true" command="vendor/bin/codecept run"/>
     </target>
-    <target name="test-api">
-        <exec passthru="true" command="../vendor/bin/codecept build" dir="api"/>
-        <exec passthru="true" command="../vendor/bin/codecept run unit" dir="api"/>
-    </target>
+
     <target name="test-backend">
         <exec passthru="true" command="../vendor/bin/codecept build" dir="backend"/>
         <exec passthru="true" command="../vendor/bin/codecept run unit" dir="backend"/>
     </target>
+
     <target name="test-common">
         <exec passthru="true" command="../vendor/bin/codecept build" dir="common"/>
         <exec passthru="true" command="../vendor/bin/codecept run unit" dir="common"/>
@@ -219,32 +197,18 @@
     <target name="phpcs">
         <exec passthru="true" command="vendor/bin/phpcs -n --standard=ruleset.xml --encoding=utf-8 ."/>
     </target>
+
     <target name="phpcbf">
         <exec passthru="true" command="vendor/bin/phpcbf --standard=ruleset.xml --encoding=utf-8 ."/>
     </target>
+
     <target name="phpmd">
         <exec passthru="true" command="vendor/bin/phpmd . text phpmd.xml"/>
     </target>
+
     <target name="test-code">
         <phingcall target="phpcs"/>
         <phingcall target="phpmd"/>
-    </target>
-
-    <target name="api-onesky-import">
-        <exec passthru="true" command="./onesky_import.sh 230828 common/messages PHP_SHORT_ARRAY '' '' '' 'api*'"/>
-    </target>
-    <target name="api-onesky-export">
-        <exec passthru="true" command="./onesky_export.sh 230828 common/messages '' '' '' 'api*'"/>
-    </target>
-    <target name="admin-onesky-import">
-        <exec passthru="true" command="./onesky_import.sh 230831 common/messages PHP_SHORT_ARRAY '' '' 'api*'"/>
-    </target>
-    <target name="admin-onesky-export">
-        <exec passthru="true" command="./onesky_export.sh 230831 common/messages '' '' 'api*'"/>
-    </target>
-    <target name="onesky-export">
-        <phingcall target="api-onesky-export"/>
-        <phingcall target="admin-onesky-export"/>
     </target>
 
     <target name="package">
