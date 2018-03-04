@@ -179,38 +179,6 @@
         <exec passthru="true" command="php ./yii cache/flush cache --interactive=0"/>
     </target>
 
-    <target name="test">
-        <exec passthru="true" command="vendor/bin/codecept build"/>
-        <exec passthru="true" command="vendor/bin/codecept run"/>
-    </target>
-
-    <target name="test-backend">
-        <exec passthru="true" command="../vendor/bin/codecept build" dir="backend"/>
-        <exec passthru="true" command="../vendor/bin/codecept run unit" dir="backend"/>
-    </target>
-
-    <target name="test-common">
-        <exec passthru="true" command="../vendor/bin/codecept build" dir="common"/>
-        <exec passthru="true" command="../vendor/bin/codecept run unit" dir="common"/>
-    </target>
-
-    <target name="phpcs">
-        <exec passthru="true" command="vendor/bin/phpcs -n --standard=ruleset.xml --encoding=utf-8 ."/>
-    </target>
-
-    <target name="phpcbf">
-        <exec passthru="true" command="vendor/bin/phpcbf --standard=ruleset.xml --encoding=utf-8 ."/>
-    </target>
-
-    <target name="phpmd">
-        <exec passthru="true" command="vendor/bin/phpmd . text phpmd.xml"/>
-    </target>
-
-    <target name="test-code">
-        <phingcall target="phpcs"/>
-        <phingcall target="phpmd"/>
-    </target>
-
     <target name="package">
         <exec command="tar -cf ${build.dir}/${build.version}.tar ./ --exclude='.git'"/>
     </target>
