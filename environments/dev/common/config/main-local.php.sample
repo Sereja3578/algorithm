@@ -4,9 +4,9 @@ $config = [
     'components' => [
         'db' => [
             'class' => 'yii\db\Connection',
-            'dsn' => 'mysql:host=127.0.0.1;port=3306;dbname=$(db.database)',
-            'username' => '$(db.username)',
-            'password' => '$(db.password)',
+            'dsn' => 'mysql:host='${db.host}';port='${db.port}';dbname='${db.database}',
+            'username' => '${db.username}',
+            'password' => '${db.password}',
             'charset' => 'utf8',
             'enableSchemaCache' => true,
             'on afterOpen' => function (yii\base\Event $event) {

@@ -4,7 +4,7 @@ $config = [
     'components' => [
         'db' => [
             'class' => 'yii\db\Connection',
-            'dsn' => 'mysql:host=127.0.0.1;port=3306;dbname=$(db.database)',
+            'dsn' => 'mysql:host=127.0.0.1;port='$(db.port)';dbname='$(db.database)',
             'username' => '$(db.username)',
             'password' => '$(db.password)',
             'charset' => 'utf8',

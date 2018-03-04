@@ -72,6 +72,9 @@ if (isset($env['skipFiles'])) {
 }
 $all = false;
 foreach ($files as $file) {
+    if (preg_match('~\.sample$~', $file)) {
+        continue;
+    }
     if (!copyFile($root, "environments/{$env['path']}/$file", $file, $all, $params)) {
         break;
     }

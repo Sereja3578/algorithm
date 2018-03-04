@@ -2,16 +2,20 @@
 
 return [
     'bootstrap' => ['gii'],
-        'modules' => [
-        'gii' => 'yii\gii\plus\Module',
+    'modules' => [
+        'gii' => [
+            'class' => 'yii\gii\plus\Module',
+        ],
     ],
-    'log' => [
-        'targets' => [
-            [
-                'class' => 'yii\log\FileTarget',
-                'levels' => ['error', 'warning'],
-                'logFile' => '/var/log/algorithm/algorithm-console.log'
-            ],
+    'components' => [
+        'log' => [
+            'targets' => [
+                [
+                    'class' => 'yii\log\FileTarget',
+                    'levels' => ['error', 'warning'],
+                    'logFile' => '/var/log/algorithm/algorithm-console.log'
+                ],
+            ]
         ]
-    ]
+   ]
 ];
