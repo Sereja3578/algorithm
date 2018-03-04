@@ -18,7 +18,7 @@ $config = [
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
             'viewPath' => '@common/mail',
-            'useFileTransport' => $(mailer.useFileTransport),
+            'useFileTransport' => '$(mailer.useFileTransport)',
         ],
         'pureRedisQuotes' => function () {
             $redis = new \Redis;

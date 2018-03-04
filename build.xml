@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="binevo-server" default="develop">
+<project name="algorithm-project" default="develop">
     <property name="project.id" value="1"/>
 
     <target name="develop">
@@ -115,7 +115,7 @@
 
 
     <target name="configure">
-        <property name="apps" value="api,backend,common,console,frontend"/>
+        <property name="apps" value="backend,common,console,frontend"/>
         <foreach list="${apps}" param="app" target="configure-app"/>
     </target>
 
@@ -137,7 +137,7 @@
 
 
     <target name="configure-test">
-        <property name="apps" value="api,backend,common,frontend"/>
+        <property name="apps" value="backend,common,frontend"/>
         <foreach list="${apps}" param="app" target="configure-test-app"/>
     </target>
     <target name="configure-test-app">
