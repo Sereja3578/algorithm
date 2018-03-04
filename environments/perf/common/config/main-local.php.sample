@@ -4,8 +4,8 @@ $config = [
     'components' => [
         'db' => [
             'class' => 'yii\db\Connection',
-            'dsn' => 'mysql:host='${db.host}';port='${db.port}';dbname='${db.database}',
-            'username' => '${db.username}',
+            'dsn' => 'mysql:host=${db.host};port=${db.port};dbname=${db.database}',
+            'username' => '${db.user}',
             'password' => '${db.password}',
             'charset' => 'utf8',
             'enableSchemaCache' => true,
@@ -51,13 +51,13 @@ if (YII_ENV_DEV) {
     $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = [
         'class' => 'yii\debug\Module',
-        'allowedIPs' => [''${db.host}'', '192.168.33.1', '::1', '93.100.216.138']
+        'allowedIPs' => ['127.0.0.1', '192.168.33.1', '::1', '93.100.216.138']
     ];
 
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',
-        'allowedIPs' => [''${db.host}'', '192.168.33.1', '::1', '*'],
+        'allowedIPs' => ['127.0.0.1', '192.168.33.1', '::1', '*'],
         'generators' => [
             'crud' => [
                 'class' => 'yii\gii\generators\crud\Generator',

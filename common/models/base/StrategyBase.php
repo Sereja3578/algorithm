@@ -43,16 +43,6 @@ class StrategyBase extends \common\components\ActiveRecord
     {
         return [
             [[
-                'result',
-                'best_strategy'
-            ], 'filter', 'filter' => function ($value) {
-                return $value ? 1 : 0;
-            }, 'skipOnEmpty' => true],
-            [[
-                'result',
-                'best_strategy'
-            ], 'boolean'],
-            [[
                 'algorithm_params_id',
                 'iteration_number',
                 'game_id'
@@ -71,6 +61,7 @@ class StrategyBase extends \common\components\ActiveRecord
             ], 'match', 'pattern' => '~^\d{1,15}(?:\.\d{1,8})?$~'],
             [['algorithm_params_id', 'iteration_number', 'money_amount', 'game_id', 'rate_amount', 'forecast', 'result', 'best_strategy'], 'required'],
             [['forecast'], 'string', 'max' => 10],
+            [['result', 'best_strategy'], 'string', 'max' => 1],
             [['algorithm_params_id'], 'exist', 'skipOnError' => true, 'targetClass' => AlgorithmParams::className(), 'targetAttribute' => ['algorithm_params_id' => 'id']],
             [['game_id'], 'exist', 'skipOnError' => true, 'targetClass' => Game::className(), 'targetAttribute' => ['game_id' => 'id']],
             [['timestamp'], 'default', 'value' => new Expression('CURRENT_TIMESTAMP')],
@@ -150,17 +141,6 @@ class StrategyBase extends \common\components\ActiveRecord
                 'direct' => true,
                 'viaTable' => false
             ]
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public static function booleanAttributes()
-    {
-        return [
-            'result',
-            'best_strategy'
         ];
     }
 

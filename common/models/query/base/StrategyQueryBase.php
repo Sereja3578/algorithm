@@ -63,22 +63,4 @@ class StrategyQueryBase extends \common\components\ActiveQuery
     {
         return $this->andWhere([$this->a('game_id') => $gameId]);
     }
-
-    /**
-     * @param int|bool $result
-     * @return $this
-     */
-    public function result($result = true)
-    {
-        return $this->andWhere([$this->a('result') => $result ? 1 : 0]);
-    }
-
-    /**
-     * @param int|bool $bestStrategy
-     * @return $this
-     */
-    public function bestStrategy($bestStrategy = true)
-    {
-        return $this->andWhere([$this->a('best_strategy') => $bestStrategy ? 1 : 0]);
-    }
 }

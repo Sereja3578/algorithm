@@ -48,12 +48,9 @@ class AlgorithmParamsBase extends \common\components\ActiveRecord
     public function rules()
     {
         return [
-            [['use_fake_coefs'], 'integer'],
             [[
                 'iterations',
-                'asset_id',
-                't_next_start_game',
-                'number_rates'
+                'asset_id'
             ], 'integer', 'min' => 0],
             [[
                 'k_lucky',
@@ -83,6 +80,9 @@ class AlgorithmParamsBase extends \common\components\ActiveRecord
             ], 'match', 'pattern' => '~^\d{1,15}(?:\.\d{1,8})?$~'],
             [['asset_id', 'amount_start', 'amount_end', 'games', 'rates'], 'required'],
             [['games', 'rates'], 'string', 'max' => 255],
+            [['t_next_start_game'], 'string', 'max' => 3],
+            [['number_rates'], 'string', 'max' => 2],
+            [['use_fake_coefs'], 'string', 'max' => 1],
             [['asset_id'], 'exist', 'skipOnError' => true, 'targetClass' => Asset::className(), 'targetAttribute' => ['asset_id' => 'id']],
             [[
                 't_start',
