@@ -35,6 +35,7 @@ $config = [
             return $redis;
         },
         'amqp' => [
+            'class' => '$(amqp.class)',
             'host' => '${amqp.host}',
             'port' => intval('${amqp.port}'),
             'vhost' => '${amqp.vhost}',
