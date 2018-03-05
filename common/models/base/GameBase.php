@@ -33,6 +33,7 @@ class GameBase extends \common\components\ActiveRecord
     public function rules()
     {
         return [
+            [['number_steps'], 'integer'],
             [[
                 'created_at',
                 'updated_at'
@@ -45,7 +46,6 @@ class GameBase extends \common\components\ActiveRecord
             ], 'date', 'format' => 'php:Y-m-d H:i:s'],
             [['name', 'number_steps'], 'required'],
             [['name'], 'string', 'max' => 255],
-            [['number_steps'], 'string', 'max' => 2],
             [[
                 'created_at',
                 'updated_at'

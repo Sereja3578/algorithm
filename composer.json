@@ -14,8 +14,8 @@
     },
     "minimum-stability": "stable",
     "require": {
-        "php": ">=5.4.0",
-        "yiisoft/yii2": "~2.0.6",
+        "php": ">=7.1.0",
+        "yiisoft/yii2": "~2.0.13.1",
         "yiisoft/yii2-bootstrap": "~2.0.0",
         "yiisoft/yii2-swiftmailer": "~2.0.0 || ~2.1.0",
         "codemix/yii2-localeurls": "^1.5",
@@ -29,7 +29,7 @@
         "yiisoft/yii2-faker": "~2.0.0",
         "codeception/base": "^2.2.3",
         "codeception/verify": "~0.3.1",
-        "ivan-chkv/yii2-gii-plus": "@dev"
+        "forex-formula/yii2-gii-plus": "@dev"
     },
     "config": {
         "process-timeout": 1800
