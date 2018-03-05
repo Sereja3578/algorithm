@@ -86,6 +86,8 @@ class GameHelper
 
         var_dump('first game was played: ' . $this->firstGamePlayed);
 
+        var_dump("Current time is: " . AlgorithmTimer::getCurrentTime() . "End time is: " . AlgorithmTimer::getEndTime());
+
         if(!AlgorithmTimer::checkTime()) {
             return false;
         }
@@ -101,6 +103,8 @@ class GameHelper
         */
         if (!$this->checkMoney($this->getCheckMoneyNumberStep())) {
             var_dump('The game: ' . $this->currentStrategyParams['game_id'] . ' was finished with result');
+
+            var_dump($this->currentStrategyParams);
 
             return $this->getBestStrategy($this->currentStrategyParams);
         }
@@ -154,9 +158,7 @@ class GameHelper
          * Функция будет выполняться до тех пор, пока не будет достигнут результат
          * или не кончится время.
          */
-        $this->playerSimulation($iterationNumber);
-
-        return false;
+        return $this->playerSimulation($iterationNumber);
     }
 
     /**
@@ -175,7 +177,7 @@ class GameHelper
 
         $algorithmParamsModel = $this->algorithmParamsModel;
         $rate = $this->chooseRate();
-        var_dump('User has choosen rate: ' . $rate);
+        var_dump('User has chosen rate: ' . $rate);
         $algorithmParamsModel->amount_start -= $rate;
 
         /*
@@ -198,7 +200,7 @@ class GameHelper
 
             var_dump('The game: ' . $game->id . ' was finished with result');
 
-            return $this->getBestStrategy($rate, $game);
+            return $this->getBestStrategy(null, $rate, $game);
         }
 
         var_dump('User has gone ' . $this->getCheckMoneyNumberStep() . ' money check');
@@ -270,10 +272,9 @@ class GameHelper
     public function getBestStrategy($currentStrategyParams = null, $rate = null, $game = null) {
 
         if($currentStrategyParams) {
-            var_dump('Saving best strategy for game: ' . $currentStrategyParams['game_id'] . ' as failed game');
-            $strategyParams = $currentStrategyParams;
+            var_dump('Strategy was got by 1 variant and strategy is: ', $currentStrategyParams);
+            return new Strategy($currentStrategyParams);
         } else {
-            var_dump('Saving best strategy for game: ' . $game->id . ' as failed game');
             $algorithmParamsModel = $this->algorithmParamsModel;
             $forecast = $this->getForecast(self::GAME_FAILED, $game);
 
@@ -287,9 +288,9 @@ class GameHelper
                 'result' => self::GAME_FAILED,
                 'best_strategy' => Strategy::BEST_STRATEGY,
             ];
+            var_dump('Strategy was got by 2 variant');
+            return new Strategy($strategyParams);
         }
-
-        return new Strategy($strategyParams);
     }
 
     /**
@@ -343,7 +344,8 @@ class GameHelper
      */
     public function saveStrategy(Strategy $strategy)
     {
-        $strategy->save();
+        var_dump('Save best strategy: ', $strategy);
+        $strategy->hardSave();
     }
 
     /**
@@ -503,7 +505,7 @@ class GameHelper
         }
 
         AlgorithmTimer::incrementCurrentTime(1);
-        $this->playGameOrNotPlay();
+        return $this->playGameOrNotPlay();
     }
 
     /**

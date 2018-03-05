@@ -45,7 +45,7 @@ class DefaultController extends Controller
                 // Итераций главного цикла - одна итерация имитирует действия одного игрока
                 'iterations' => 20,
                 // Коэффициент удачливости игрока
-                'k_lucky' => 5.7,
+                'k_lucky' => 1,
                 // Валютная пара по которй вытаскиваем котировки
                 'asset_id' => 1,
                 // Начальная сумма > t_ends
@@ -124,7 +124,6 @@ class DefaultController extends Controller
                         break;
                     }
                 }
-                break;
             }
         }
 

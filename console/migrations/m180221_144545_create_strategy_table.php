@@ -23,7 +23,7 @@ class m180221_144545_create_strategy_table extends Migration
             'money_amount' => $this->decimal(23, 8)->unsigned()->notNull()->comment("Сумма денег на момент достижения результата"),
             'game_id' => $this->integer(11)->unsigned()->notNull()->comment("Игра"),
             'rate_amount' => $this->decimal(23, 8)->unsigned()->notNull()->comment("Ставка"),
-            'forecast' => $this->string(10)->notNull()->comment("Прогноз"),
+            'forecast' => $this->string(25)->notNull()->comment("Прогноз"),
             'result' => $this->tinyInteger(1)->unsigned()->notNull()->comment("Результат"),
             'best_strategy' => $this->tinyInteger(1)->unsigned()->notNull()->comment("Лучшая стратегия"),
         ]);
