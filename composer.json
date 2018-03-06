@@ -21,7 +21,11 @@
         "codemix/yii2-localeurls": "^1.5",
         "dmstr/yii2-adminlte-asset": "^2.1",
         "dcb9/yii2-phpredis": "^1.1",
-        "freimaurerei/yii2-amqp": "v0.2.3"
+        "freimaurerei/yii2-amqp": "v0.2.3",
+        "kartik-v/yii2-grid": "@dev",
+        "kartik-v/yii2-date-range": "*",
+        "kartik-v/yii2-datecontrol": "dev-master",
+        "voskobovich/yii2-many-many-behavior": "^3.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",
