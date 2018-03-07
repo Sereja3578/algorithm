@@ -1,11 +1,12 @@
 <?php
 
 use yii\helpers\Html;
-use kartik\grid\GridView;
+use backend\widgets\GridView;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\modules\algorithm\models\AlgorithmParamsSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
+/* @var $permissionPrefix */
 
 $this->title = $searchModel->getGridTitle();
 $this->params['breadcrumbs'][] = $this->title;
@@ -18,15 +19,14 @@ $createButton = Html::a(
     ['class' => 'btn btn-success btn-sm']
 );
 ?>
-
-
-
-<div class="box box-primary">
+<div class="box box-primary algorithm-params-index">
     <div class="box-body">
         <?= GridView::widget([
             'dataProvider' => $dataProvider,
             'filterModel' => $searchModel,
+            'disableColumns' => $searchModel->getDisableColumns(),
             'columns' => $searchModel->getGridColumns(),
+            'toolbar' => $searchModel->getGridToolbar(),
             'panelBeforeTemplate' => '
                 <div class="pull-left">' . $createButton . '</div>
                 <div class="pull-left"></div>
@@ -35,6 +35,6 @@ $createButton = Html::a(
                 </div>
                 <div class="clearfix"></div>
             ',
-        ]); ?>
+        ]) ?>
     </div>
 </div>

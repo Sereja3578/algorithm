@@ -15,6 +15,7 @@ Yii::$container = new yii\di\Container();
 
 /**
  * @property Redis $pureRedisQuotes
+ * @property Redis $pureRedis
  * @property freimaurerei\yii2\amqp\AMQP $amqp
  */
 abstract class FakeApplication extends yii\base\Application

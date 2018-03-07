@@ -27,6 +27,11 @@ class AlgorithmParams extends AlgorithmParamsBase
     public $rates;
 
     /**
+     * @var array
+     */
+    public $gamesChances;
+
+    /**
      * @var int
      */
     public $use_fake_coefs;
@@ -68,7 +73,6 @@ class AlgorithmParams extends AlgorithmParamsBase
                 'amount_end'
             ], 'match', 'pattern' => '~^\d{1,15}(?:\.\d{1,8})?$~'],
             [['asset_id', 'amount_start', 'amount_end', 'games', 'rates'], 'required'],
-            [['games', 'rates'], 'string', 'max' => 255],
             [['asset_id'], 'exist', 'skipOnError' => true, 'targetClass' => Asset::className(), 'targetAttribute' => ['asset_id' => 'id']],
             [[
                 't_start',
@@ -85,7 +89,8 @@ class AlgorithmParams extends AlgorithmParamsBase
             [['t_next_start_game'], 'default', 'value' => '5'],
             [['number_rates'], 'default', 'value' => '2'],
             [['probability_play', 'use_fake_coefs'], 'default', 'value' => '0'],
-            [['quotes', 'rates', 'coefs'], 'safe', 'on' => 'validate'],
+            [['quotes', 'coefs', 'games'], 'safe', 'on' => 'validate'],
+            [['gamesChances'], 'backend\components\validators\GameChanceValidator'],
         ];
     }
 
@@ -95,8 +100,7 @@ class AlgorithmParams extends AlgorithmParamsBase
     public function beforeValidate()
     {
         if(parent::beforeValidate()){
-            $this->games = serialize($this->games);
-            $this->rates = implode(', ', $this->rates);
+            $this->games = serialize(array_filter($this->gamesChances));
             return true;
         };
         return false;

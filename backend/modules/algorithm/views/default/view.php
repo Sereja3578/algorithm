@@ -1,51 +1,32 @@
 <?php
 
-use yii\helpers\Html;
-use yii\widgets\DetailView;
+use backend\helpers\Html;
+use backend\widgets\DetailView;
+use yii\helpers\Url;
+use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\AlgorithmParams */
+/* @var $model backend\modules\algorithm\models\base\AlgorithmParamsSearchBase */
 
-$this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('models', 'Algorithm Params'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = $model->getListTitle();
+$this->params['title'] = $model->getGridTitle();
+$this->params['title_desc'] = Yii::t('backend', 'Просмотр');
+$this->params['breadcrumbs'][] = ['label' => $model->getGridTitle(), 'url' => ['index']];
+$this->params['breadcrumbs'][] = $model->id;
+
+$updateButton = Html::updateButton($model);
+$createButton = Html::createButton();
+$indexButton = Html::indexButton($model->getGridTitle());
 ?>
-<div class="algorithm-params-view">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a(Yii::t('models', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a(Yii::t('models', 'Delete'), ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => Yii::t('models', 'Are you sure you want to delete this item?'),
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
-
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'id',
-            'iterations',
-            'k_lucky',
-            'asset_id',
-            'amount_start',
-            'amount_end',
-            't_start',
-            't_end',
-            'deviation_from_amount_end',
-            'games',
-            't_next_start_game',
-            'rates',
-            'number_rates',
-            'rate_coef',
-            'probability_play',
-            'created_at',
-            'updated_at',
-        ],
-    ]) ?>
-
+<div class="box box-primary algorithm-params-view">
+    <div class="box-body" style="margin-top: 10px">
+        <p align="right">
+            <?= join(' ', [$updateButton, $createButton, $indexButton]) ?>
+        </p>
+        <?= DetailView::widget([
+            'model' => $model,
+            'attributes' => $model->getListColumns(),
+            'disableAttributes' => $model->getDisableAttributes(),
+        ])?>
+    </div>
 </div>

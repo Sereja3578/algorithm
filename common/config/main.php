@@ -29,11 +29,14 @@ return [
             ]
         ],
         'cache' => [
-            'class' => 'yii\caching\FileCache',
+            'class' => 'common\components\Cache',
+            'keyPrefix' => 'cache:',
+            'redis' => 'redis'
         ],
         'authManager' => [
-            'class' => 'yii\rbac\DbManager'
-        ]
+            'class' => 'backend\components\DbManager',
+            'cache' => 'cache'
+        ],
     ],
     // set target language to be Russian
     'language' => 'ru',

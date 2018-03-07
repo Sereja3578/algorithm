@@ -2,6 +2,7 @@
 
 namespace backend\templates\generators\crud;
 
+use common\components\ActiveRecord;
 use Yii;
 use yii\base\ErrorException;
 use yii\db\Schema;
@@ -55,14 +56,14 @@ class Generator extends GeneratorDefault
     public $addingI18NStrings = true;
     public $generateRelationsFields = true;
     public $icon;
-    
+
     public $generateRelations = 'all';
 
     protected $I18NStrings = [];
     protected $classNames = [];
 
     public $relations = [];
-    
+
     public $datetimeAttributes = array('updated_at', 'created_at', 'created', 'updated', 'timestamp');
     public $imageAttributes = ['img', 'image', 'logo', 'avatar', 'picture'];
 
@@ -123,12 +124,12 @@ class Generator extends GeneratorDefault
     {
         return $this->__datetimeAttributes;
     }
-    
+
     public function getStatusAttributes()
     {
         return $this->__statusAttributes;
     }
-    
+
     /**
      * Generates code for active search field
      * @param string $attribute
@@ -140,15 +141,15 @@ class Generator extends GeneratorDefault
         if ($tableSchema === false) {
             return "\$form->field(\$model, '$attribute')";
         }
-        
+
         $name = 'name';
         if ($isUser === true) {
             $name = 'username';
         }
-        
+
         return "\$form->field(\$model, '$attribute')->dropDownList({$relationName}::findForFilter(),[])";
     }
-    
+
     /**
      * Generates code for active search field
      * @param string $attribute
@@ -160,10 +161,10 @@ class Generator extends GeneratorDefault
         if ($tableSchema === false) {
             return "\$form->field(\$model, '$attribute')";
         }
-        
+
         return "\$form->field(\$model, '$attribute')->dropDownList(array(0 => ".$this->generateI18N('Нет').", 1 => ".$this->generateI18N('Да')."), [])";
     }
-    
+
     private function getLabelAttribute($class)
     {
         if (is_subclass_of($class, 'yii\db\ActiveRecord')) {
@@ -192,22 +193,22 @@ class Generator extends GeneratorDefault
     public function getLinks($table)
     {
         $db = $this->getDbConnection();
-        
+
         $relations = $this->generateRelations();
-        
+
         foreach ($this->getTableNames() as $tableName) {
             if ($tableName === $table) {
                 $_className = $this->generateClassName($tableName);
                 $_tableSchema = $db->getTableSchema($tableName);
                 $_relations = isset($relations[$tableName]) ? $relations[$tableName] : [];
-                
+
                 return [$_className, $_tableSchema, $_relations];
             }
         }
-        
+
         return false;
     }
-    
+
     protected $tableNames;
 
     /**
@@ -244,7 +245,7 @@ class Generator extends GeneratorDefault
 
         return $this->tableNames = $tableNames;
     }
-    
+
     public function getModelAttributes()
     {
         static $attributes;
@@ -334,12 +335,12 @@ class Generator extends GeneratorDefault
                     if (in_array($data['type'], array('foreign-key', 'many-many-behavior'))) {
                         continue;
                     }
-                    
+
                     /** @var \yii\db\ColumnSchema $column */
                     if (!isset($data['schema'])) {
                         continue;
                     }
-                    
+
                     $column = $data['schema'];
                 }
                 if ($column && $column->isPrimaryKey) {
@@ -421,7 +422,7 @@ class Generator extends GeneratorDefault
         return 'This generator generates a controller and views that implement CRUD (Create, Read, Update, Delete)
             operations for the specified data model.';
     }
-    
+
     /**
      * @return array the generated relation declarations
      */
@@ -491,7 +492,7 @@ class Generator extends GeneratorDefault
                             break;
                         }
                     }
-                    
+
                     $link = $this->generateRelationLink($refs);
                     $relationName = $this->generateRelationName($relations, $refTableSchema, $className, $hasMany);
                     $relations[$refTableSchema->fullName][$relationName] = [
@@ -528,7 +529,7 @@ class Generator extends GeneratorDefault
 
         return '[' . implode(', ', $pairs) . ']';
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -699,10 +700,10 @@ class Generator extends GeneratorDefault
     public function getModelHasDates()
     {
         static $hasDates;
-        
+
         $tableSchema = $this->getTableSchema();
         $this->generateTimestampAttributes($tableSchema);
-        
+
         if (!isset($hasDates)) {
             return $hasDates = count(array_intersect($this->__datetimeAttributes, $this->getColumnNames())) > 0;
         }
@@ -717,7 +718,7 @@ class Generator extends GeneratorDefault
     public function isIdModel($attribute, $tableName = null)
     {
         $links = $this->getLinks($tableName);
-        
+
         if (substr($attribute, 0, 3) == 'id_') {
             $atBegin = true;
             $table = substr($attribute, 3);
@@ -726,7 +727,7 @@ class Generator extends GeneratorDefault
         } else {
             return false;
         }
-        
+
         if (in_array($table, ['previous'])) {
             if (!empty($tableName)) {
                 $table = $tableName;
@@ -734,7 +735,7 @@ class Generator extends GeneratorDefault
                 return false;
             }
         }
-        
+
         if (!empty($table)) {
             $name = explode('_', $table);
             foreach ($name as &$n) {
@@ -793,7 +794,7 @@ class Generator extends GeneratorDefault
     }
 
     public $relationsNs = null;
-    
+
     public function getRelationsNs($tableSchema)
     {
         if (empty($this->relationsNs)) {
@@ -804,31 +805,31 @@ class Generator extends GeneratorDefault
                 $this->relationsNs[$__relationKey] = lcfirst(\yii\helpers\Inflector::camelize($__relationTable, true));
             }
         }
-        
+
         return $this->relationsNs;
     }
-    
+
     public function existRelation($column)
     {
         if (isset($this->relationsNs[$column->name])) {
             return true;
         }
-        
+
         return false;
     }
-    
+
     public function getRelationByColumn($column)
     {
         return $this->relationsNs[$column->name];
     }
-    
+
     public function getRelationModel($column)
     {
         return ucfirst($this->relationsNs[$column->name]);
     }
-    
+
     protected $__datetimeAttributes = [];
-    
+
     /**
      * Get statuses constants to begin at model
      * @param \yii\db\TableSchema $tableSchema
@@ -845,9 +846,9 @@ class Generator extends GeneratorDefault
         }
         return "protected \$datetimeAttributes = ['".implode("','", $this->__datetimeAttributes)."'];\n";
     }
-    
+
     protected $__statusAttributes = [];
-    
+
     /**
      * Get statuses constants to begin at model
      * @param \yii\db\TableSchema $tableSchema
@@ -864,7 +865,7 @@ class Generator extends GeneratorDefault
         }
         return "protected \$statusAttributes = ['".implode("','", $this->__statusAttributes)."'];\n";
     }
-    
+
     public function generateRelationCode($relationName, $relationModel, $attribute)
     {
         $field_name = 'name';
@@ -902,10 +903,10 @@ class Generator extends GeneratorDefault
         if (empty($field_name)) {
             $code = "return \$model->$attribute;";
         }
-        
+
         return $code;
     }
-    
+
     /**
      * Generates a grid column
      * @param $tableSchema \yii\db\TableSchema
@@ -1046,9 +1047,9 @@ class Generator extends GeneratorDefault
         $this->generateTimestampAttributes($tableSchema);
         $this->generateStatusAttributes($tableSchema);
         $this->getRelationsNs($tableSchema);
-        
+
         $column = $this->getTableSchema()->columns[$attribute];
-        
+
         if ($this->existRelation($column)) {
             $relationName = $this->getRelationByColumn($column);
             $relationModel = $this->getRelationModel($column);
@@ -1083,7 +1084,7 @@ class Generator extends GeneratorDefault
     ]),
     Html::hiddenInput(Html::getInputName(\$model, '$attribute'), \$model->$attribute)";
             }
-            
+
             if (in_array($attribute, $this->__datetimeAttributes)) {
                 return "\$form->field(\$model, '$attribute')->widget(\\kartik\\datecontrol\\DateControl::className(), [
                     'type' => 'datetime',
@@ -1094,7 +1095,7 @@ class Generator extends GeneratorDefault
                     'options' => ['disabled' => true],
                 ]);";
             }
-            
+
             if (in_array($attribute, $this->__statusAttributes)) {
                 return "\$form->field(\$model, '$attribute')->dropDownList([0 => ".$this->generateI18N('Неактивно').", 1 => ".$this->generateI18N('Активно')."])";
             }
@@ -1283,7 +1284,7 @@ class Generator extends GeneratorDefault
 
         $tableSchema = $this->getTableSchema();
         $this->generateTimestampAttributes($tableSchema);
-        
+
         $datetimeAttributes = $this->__datetimeAttributes;
         $dateAttributes = [];
         $likeConditions = [];
@@ -1378,7 +1379,7 @@ class Generator extends GeneratorDefault
     public function generate()
     {
         $this->getModelAttributes();
-        
+
         //$this->readModel($this->modelClass);
         $this->relationsFields();
         $files = parent::generate();

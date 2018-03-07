@@ -42,7 +42,7 @@ class Generator extends GeneratorDefault
 {
     public $enablePjax = true;
     public $enableI18N = true;
-    public $template = 'binevo';
+    public $template = 'algorithm';
     public $baseControllerClass = 'backend\components\Controller';
     public $viewPath = '@backend\modules\<module_name>\views\<controller_name>';
     public $controllerClass = 'backend\modules\<module_name>\controllers\<controller_name>';

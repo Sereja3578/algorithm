@@ -1,21 +1,28 @@
 <?php
 
-use yii\helpers\Html;
-
+use backend\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\AlgorithmParams */
 
-$this->title = Yii::t('models', 'Create Algorithm Params');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('models', 'Algorithm Params'), 'url' => ['index']];
+$this->title = Yii::t('algorithm', 'Создать Algorithm Params');
+$this->params['title'] = Yii::t('algorithm', 'Algorithm Params');
+$this->params['title_desc'] = $this->title;
+$this->params['breadcrumbs'][] = ['label' => Yii::t('algorithm', 'Algorithm Params'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="algorithm-params-create">
-
-    <h1><?= Html::encode($this->title) ?></h1>
+<div class="box box-primary algorithm-params-create">
+    <div class="box-header">
+        <div class="box-tools">
+            <?= Html::a(Html::tag('span', '', ['class' => 'glyphicon glyphicon-list']) . ' ' .
+            Yii::t('algorithm', 'Algorithm Params'), ['index'], ['class' => 'btn btn-default btn-sm']) ?>
+        </div>
+    </div>
+    <div class="box-body">
 
     <?= $this->render('_form', [
         'model' => $model,
     ]) ?>
 
+    </div>
 </div>

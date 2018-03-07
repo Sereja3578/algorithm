@@ -18,37 +18,8 @@ use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use Yii;
 
-class AuthController extends Controller {
-
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-        return array_merge(parent::behaviors(), [
-            'access' => [
-                'class' => AccessControl::className(),
-                'rules' => [
-                    [
-                        'actions' => ['login', 'request-password-reset', 'reset-password'],
-                        'allow' => true,
-                    ],
-                    [
-                        'actions' => ['logout'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'logout' => ['post'],
-                ],
-            ],
-        ]);
-    }
-
+class AuthController extends Controller
+{
     /**
      * @inheritdoc
      */

@@ -47,7 +47,7 @@ class Generator extends \yii\gii\Generator
     public $enableTimestampBehavior = true;
     public $addingI18NStrings = false;
     public $messagesPaths = '@backend/messages';
-    public $template = 'binevo';
+    public $template = 'algorithm';
     public $imageAttributes = ['img', 'image', 'logo', 'avatar', 'picture'];
     public $relationsSetters = [];
 

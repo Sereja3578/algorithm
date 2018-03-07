@@ -21,7 +21,7 @@ class Controller extends BaseController
     /**
      * @var string
      */
-    public $searchModel;
+    protected $searchClass;
 
     /**
      * @return array
@@ -52,27 +52,7 @@ class Controller extends BaseController
         return $permissionPrefix;
     }
 
-    /**
-     * @param \yii\base\Action $action
-     * @return bool
-     * @throws ForbiddenHttpException
-     */
-    public function beforeAction($action)
-    {
-        parent::beforeAction($action);
 
-        /* Не проверяем действия контроллеров вне модулей,
-        так как они проверяются в behavior */
-        if ($this->module->id == Yii::$app->id) {
-            return true;
-        }
-
-        if ($this->checkPermission()) {
-            return true;
-        } else {
-            throw new ForbiddenHttpException();
-        }
-    }
 
     /**
      * @return bool
@@ -96,6 +76,6 @@ class Controller extends BaseController
      */
     public function getSearchModel() : ActiveRecord
     {
-        return new $this->searchModel;
+        return new $this->searchClass;
     }
 }

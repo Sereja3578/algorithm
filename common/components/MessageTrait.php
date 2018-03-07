@@ -17,6 +17,7 @@ trait MessageTrait
 
         $doc = new ConstDoc($className);
         $comments = $doc->getDocComments();
+
         foreach ($comments as $constName => $comment) {
             $code = constant(static::class . '::' . $constName);
             if (!empty($comment['comment'])) {

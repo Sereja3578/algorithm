@@ -34,6 +34,41 @@ class ActiveRecord extends BoostActiveRecord
     }
 
     /**
+     * @param array $filters
+     * @return array
+     */
+    public static function findForFilter($filters = [])
+    {
+        $result = static::findFilterQuery($filters)->column();
+        $messages = static::getMessages();
+
+        foreach ($result as $key => $name) {
+            if (!empty($messages[$key])) {
+                $result[$key] = $messages[$key];
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @inheritdoc
+     * @param array $filters
+     * @return ActiveQuery
+     */
+    public static function findFilterQuery($filters = [])
+    {
+        $query = static::find()->listItems();
+        if (sizeof($filters) > 0) {
+            foreach ($filters as $key => $value) {
+                $query->andFilterWhere([$query->a($key) => $value]);
+            }
+        }
+        /** @var \common\components\ActiveQuery $query */
+        return $query;
+    }
+
+    /**
      * @inheritdoc
      */
     public static function updateAll($attributes, $condition = '', $params = [])

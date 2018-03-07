@@ -11,27 +11,32 @@ use common\models\base\GameBase;
 class Game extends GameBase
 {
     /**
-     * @message Игра в один шаг
+     * Игра в один шаг
+     * @message const
      */
     const ONE_STEPS_GAME = 1;
 
     /**
-     * @message Игра в два шага
+     * Игра в два шага
+     * @message const
      */
     const TWO_STEPS_GAME = 2;
 
     /**
-     * @message Игра в три шага
+     * Игра в три шага
+     * @message const
      */
     const THREE_STEPS_GAME = 3;
 
     /**
-     * @message Игра в четыре шага
+     * Игра в четыре шага
+     * @message const
      */
     const FOUR_STEPS_GAME = 4;
 
     /**
-     * @message Игра в пять шагов
+     * Игра в пять шагов
+     * @message const
      */
     const FIVE_STEPS_GAME = 5;
 }
