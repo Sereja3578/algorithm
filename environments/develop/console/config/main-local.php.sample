@@ -5,7 +5,13 @@ return [
     'modules' => [
         'gii' => [
             'class' => 'yii\gii\plus\Module',
-        ],
+            'generators' => [
+                'crud2' => [
+                    'class' => 'backend\templates\generators\crud\Generator',
+                    'templates' => ['algorithm' => '@backend/templates/generators/crud/algorithm']
+                ]
+            ]
+        ]
     ],
     'components' => [
         'log' => [

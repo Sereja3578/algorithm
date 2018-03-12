@@ -70,7 +70,7 @@ class StrategyBase extends \common\components\ActiveRecord
                 'rate_amount'
             ], 'match', 'pattern' => '~^\d{1,15}(?:\.\d{1,8})?$~'],
             [['algorithm_params_id', 'iteration_number', 'money_amount', 'game_id', 'rate_amount', 'forecast', 'result', 'best_strategy'], 'required'],
-            [['forecast'], 'string', 'max' => 10],
+            [['forecast'], 'string', 'max' => 25],
             [['algorithm_params_id'], 'exist', 'skipOnError' => true, 'targetClass' => AlgorithmParams::className(), 'targetAttribute' => ['algorithm_params_id' => 'id']],
             [['game_id'], 'exist', 'skipOnError' => true, 'targetClass' => Game::className(), 'targetAttribute' => ['game_id' => 'id']],
             [['timestamp'], 'default', 'value' => new Expression('CURRENT_TIMESTAMP')],

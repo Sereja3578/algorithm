@@ -5,17 +5,23 @@ return [
     'modules' => [
         'gii' => [
             'class' => 'yii\gii\plus\Module',
-        ],
+            'generators' => [
+                'crud2' => [
+                    'class' => 'backend\templates\generators\crud\Generator',
+                    'templates' => ['algorithm' => '@backend/templates/generators/crud/algorithm']
+                ]
+            ]
+        ]
     ],
     'components' => [
-    'log' => [
-             'targets' => [
-                 [
-                     'class' => 'yii\log\FileTarget',
-                     'levels' => ['error', 'warning'],
-                     'logFile' => '/var/log/algorithm/algorithm-console.log'
-                 ],
-             ]
-         ]
-     ]
+        'log' => [
+            'targets' => [
+                [
+                    'class' => 'yii\log\FileTarget',
+                    'levels' => ['error', 'warning'],
+                    'logFile' => '/var/log/algorithm/algorithm-console.log'
+                ],
+            ]
+        ]
+    ],
 ];

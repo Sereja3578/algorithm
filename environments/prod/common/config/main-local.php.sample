@@ -20,6 +20,27 @@ $config = [
             'viewPath' => '@common/mail',
             'useFileTransport' => '${mailer.useFileTransport}',
         ],
+        'redis' => [
+            'class' => 'dcb9\redis\Connection',
+            'hostname' => '${redis.host}',
+            'port' => intval('${redis.port}'),
+            'password' => '${redis.password}' ?: null,
+            'database' => intval('${redis.db}')
+        ],
+        'pureRedis' => function () {
+            $redis = new \Redis;
+            if (!$redis->connect('${redis.host}', '${redis.port}')) {
+                throw new \RedisException('Can not connect.');
+            }
+            $password = '${redis.password}';
+            if ($password && !$redis->auth($password)) {
+                throw new \RedisException('Can not authenticate.');
+            }
+            if (!$redis->select(intval('${redis.db}'))) {
+                throw new \RedisException('Can not select database.');
+            }
+            return $redis;
+        },
         'pureRedisQuotes' => function () {
             $redis = new \Redis;
             if (!$redis->connect('${pureRedisQuotes.host}', '${pureRedisQuotes.port}')) {
@@ -45,28 +66,5 @@ $config = [
         ]
     ],
 ];
-
-if (YII_ENV_DEV) {
-    // configuration adjustments for 'dev' environment
-    $config['bootstrap'][] = 'debug';
-    $config['modules']['debug'] = [
-        'class' => 'yii\debug\Module',
-        'allowedIPs' => ['127.0.0.1', '192.168.33.1', '::1', '93.100.216.138']
-    ];
-
-    $config['bootstrap'][] = 'gii';
-    $config['modules']['gii'] = [
-        'class' => 'yii\gii\Module',
-        'allowedIPs' => ['127.0.0.1', '192.168.33.1', '::1', '*'],
-        'generators' => [
-            'crud' => [
-                'class' => 'yii\gii\generators\crud\Generator',
-                'templates' => [
-                    'adminlte' => '@vendor/dmstr/yii2-adminlte-asset/gii/templates/crud/simple',
-                ]
-            ]
-        ],
-    ];
-}
 
 return $config;
