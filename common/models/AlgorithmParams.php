@@ -26,11 +26,6 @@ class AlgorithmParams extends AlgorithmParamsBase
      */
     public $gamesChances;
 
-    /**
-     * @var int
-     */
-    public $use_fake_coefs;
-
     public function rules()
     {
         return [
@@ -83,7 +78,7 @@ class AlgorithmParams extends AlgorithmParamsBase
             ], 'default', 'value' => '1'],
             [['t_next_start_game'], 'default', 'value' => '5'],
             [['number_rates'], 'default', 'value' => '2'],
-            [['probability_play', 'use_fake_coefs'], 'default', 'value' => '0'],
+            [['probability_play'], 'default', 'value' => '0'],
             [['quotes', 'coefs', 'games'], 'safe', 'except' => 'before-validate'],
             [['gamesChances'], 'backend\components\validators\GameChanceValidator', 'except' => 'before-validate'],
         ];

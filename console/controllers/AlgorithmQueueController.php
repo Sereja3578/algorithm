@@ -9,7 +9,8 @@ use backend\components\QuoteHelper;
 use backend\components\WinCoefHelper;
 use common\models\Strategy;
 use common\models\AlgorithmParams;
-use freimaurerei\yii2\amqp\controllers\QueueListener;
+use common\components\QueueListener;
+use Exception;
 
 /**
  * Class PlatprocQueueController
@@ -60,11 +61,12 @@ class AlgorithmQueueController extends QueueListener
                         $model->hardSave(false);
                         $result->algorithm_params_id = $model->id;
                         $gameHelper->saveStrategy($result);
-                        break;
+                        return true;
                     }
                 }
             }
         } catch (Exception $e) {
+            var_dump($e->getMessage() . $e->getFile() . $e->getLine());
             Yii::$app->db->close();
             return false;
         }

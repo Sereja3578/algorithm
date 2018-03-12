@@ -113,17 +113,16 @@ class DefaultController extends Controller
 
         if($model->load($params) && $model->validate()) {
             Yii::$app->amqp->send('algorithmExchange', 'run', [
-                'params' => $params
+                'model' => $model
             ]);
-
-            Yii::$app->session->setFlash(
-                'success',
-                Yii::t('flash', 'Алгоритм успешно отправлен на выполнение')
-            );
-
-            return $this->redirect(Url::toRoute(['index']));
         }
 
+        Yii::$app->session->setFlash(
+            'success',
+            Yii::t('flash', 'Алгоритм успешно отправлен на выполнение')
+        );
+
+        return $this->redirect(Url::toRoute(['index']));
     }
 
     /**
