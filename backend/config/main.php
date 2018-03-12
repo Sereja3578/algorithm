@@ -97,15 +97,33 @@ return [
                 ],
             ],
         ],
-        /*
-        'urlManager' => [
-            'enablePrettyUrl' => true,
-            'showScriptName' => false,
-            'rules' => [
+    ],
+    'as AccessBehavior' => [
+        'class' => 'backend\components\rbac\AccessBehavior',
+        'rules' => [
+            'auth' => [
+                [
+                    'actions' => ['login', 'request-password-reset', 'reset-password'],
+                    'allow' => true,
+                ],
+                [
+                    'actions' => ['logout'],
+                    'allow' => true,
+                    'roles' => ['@'],
+                ],
+            ],
+            'site' => [
+                [
+                    'actions' => ['error'],
+                    'allow' => true,
+                ],
+                [
+                    'actions' => ['index'],
+                    'allow' => true,
+                    'roles' => ['@'],
+                ],
             ],
         ],
-        */
     ],
-
     'params' => $params,
 ];

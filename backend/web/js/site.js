@@ -7,11 +7,12 @@ $(function () {
 });
 
 function gamesChanceVisualization() {
-    var values = $(this).val();
-
     $('.game-chance-field').parent().hide();
 
     $('#algorithmparams-games').on('change', function () {
+
+        var values = $(this).val();
+
         $.ajax({
             method : 'post',
             'success' : function ($data) {

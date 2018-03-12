@@ -320,6 +320,9 @@ class GameHelper
         $this->bestStrategyParams = $bestStrategyParams;
     }
 
+    /**
+     * @return bool
+     */
     public function checkStrategy()
     {
         $algorithmParamsModel = $this->algorithmParamsModel;
@@ -406,11 +409,18 @@ class GameHelper
         return min($this->getRatesAsArray());
     }
 
+    /**
+     * @param $gameId
+     * @return null|Game
+     */
     public function getGame($gameId)
     {
         return Game::findOne(['id' => $gameId]);
     }
 
+    /**
+     * @param array $quotes
+     */
     public function setPreparedResultGameSteps(array $quotes)
     {
         $preparedResultGameSteps = [];
@@ -432,6 +442,9 @@ class GameHelper
         $this->preparedResultGameSteps = $preparedResultGameSteps;
     }
 
+    /**
+     * @return array
+     */
     public function getPreparedResultGameSteps(): array
     {
         return $this->preparedResultGameSteps;

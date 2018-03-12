@@ -24,6 +24,9 @@ class AlgorithmQueueController extends QueueListener
      */
     public function actionRun($model)
     {
+
+        print_r($model);
+
         try {
             // Устанавливаем начальное и конечное время
             AlgorithmTimer::setCurrentTime($model->t_start);
@@ -67,7 +70,6 @@ class AlgorithmQueueController extends QueueListener
             }
         } catch (Exception $e) {
             var_dump($e->getMessage() . $e->getFile() . $e->getLine());
-            Yii::$app->db->close();
             return false;
         }
     }
