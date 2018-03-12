@@ -146,7 +146,7 @@ class GameHelper
                 } elseif ($result instanceof Strategy) {
                     return $result;
                 }
-                $this->firstGamePlayed = true;
+                $this->setFirstGamePlayed(true);
             }
         }
 
@@ -233,8 +233,7 @@ class GameHelper
 
         // Если победил, увеличиваем деньги игрока
         if ($gameResult) {
-            $winCoef = WinCoefHelper::getCurrentCoef(AlgorithmTimer::getCurrentTimestamp());
-            $algorithmParamsModel->amount_start += $rate * $winCoef;
+            $this->increaseMoney($algorithmParamsModel, $rate);
         }
 
         $forecast = $this->getForecast($gameResult, $game);
@@ -302,6 +301,18 @@ class GameHelper
     }
 
     /**
+     * Добавляет деньги
+     *
+     * @param AlgorithmParams $algorithmParamsModel
+     * @param float $rate
+     */
+    public function increaseMoney($algorithmParamsModel, $rate)
+    {
+        $winCoef = WinCoefHelper::getCurrentCoef(AlgorithmTimer::getCurrentTimestamp());
+        $algorithmParamsModel->amount_start += $rate * $winCoef;
+    }
+
+    /**
      * @param array $bestStrategyParams
      */
     public function setBestStrategyParams(array $bestStrategyParams): void
@@ -345,6 +356,7 @@ class GameHelper
     public function saveStrategy(Strategy $strategy)
     {
         var_dump('Save best strategy: ', $strategy);
+        $strategy->money_amount = round($strategy->money_amount, 8);
         $strategy->hardSave();
     }
 
@@ -661,5 +673,28 @@ class GameHelper
      */
     public function resetCheckMoneyNumberStep() {
         $this->checkMoneyNumberStep = 1;
+    }
+
+    public function resetAllParams($algorithmParamsModel)
+    {
+        $this->setAlgorithmParamsModel($algorithmParamsModel);
+        $this->setFirstGamePlayed(false);
+        $this->resetCheckMoneyNumberStep();
+    }
+
+    /**
+     * @param AlgorithmParams $algorithmParamsModel
+     */
+    public function setAlgorithmParamsModel(AlgorithmParams $algorithmParamsModel)
+    {
+        $this->algorithmParamsModel = $algorithmParamsModel;
+    }
+
+    /**
+     * @return AlgorithmParams
+     */
+    public function getAlgorithmParamsModel() : AlgorithmParams
+    {
+        return $this->algorithmParamsModel;
     }
 }

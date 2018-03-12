@@ -24,11 +24,6 @@ class AlgorithmParams extends AlgorithmParamsBase
     /**
      * @var array
      */
-    public $rates;
-
-    /**
-     * @var array
-     */
     public $gamesChances;
 
     /**
@@ -89,8 +84,8 @@ class AlgorithmParams extends AlgorithmParamsBase
             [['t_next_start_game'], 'default', 'value' => '5'],
             [['number_rates'], 'default', 'value' => '2'],
             [['probability_play', 'use_fake_coefs'], 'default', 'value' => '0'],
-            [['quotes', 'coefs', 'games'], 'safe', 'on' => 'validate'],
-            [['gamesChances'], 'backend\components\validators\GameChanceValidator'],
+            [['quotes', 'coefs', 'games'], 'safe', 'except' => 'before-validate'],
+            [['gamesChances'], 'backend\components\validators\GameChanceValidator', 'except' => 'before-validate'],
         ];
     }
 
@@ -101,6 +96,7 @@ class AlgorithmParams extends AlgorithmParamsBase
     {
         if(parent::beforeValidate()){
             $this->games = serialize(array_filter($this->gamesChances));
+            $this->scenario = 'before-validate';;
             return true;
         };
         return false;

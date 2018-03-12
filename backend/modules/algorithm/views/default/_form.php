@@ -24,6 +24,9 @@ use common\models\Game;
 <div class="algorithm-params-form">
 
     <?= $form->field($model, 'iterations')->widget(\kartik\widgets\TouchSpin::className(), [
+        'options' => [
+            'value' => 20,
+        ],
         'pluginOptions' => [
             'verticalbuttons' => true,
             'min' => 1,
@@ -32,6 +35,9 @@ use common\models\Game;
     ]); ?>
 
     <?= $form->field($model, 'k_lucky')->widget(\kartik\widgets\TouchSpin::className(), [
+        'options' => [
+            'value' => 1.2,
+        ],
         'pluginOptions' => [
             'verticalbuttons' => true,
             'min' => 0,
@@ -42,15 +48,24 @@ use common\models\Game;
 
     <?= $form->field($model, 'asset_id')->widget(\kartik\widgets\Select2::className(), [
         'data' => Asset::findForFilter(), 
-        'options' => ['placeholder' => Yii::t('algorithm', 'Выберите валютную пару')],
+        'options' => [
+            'placeholder' => Yii::t('algorithm', 'Выберите валютную пару'),
+            'value' => 1
+        ],
         'pluginOptions' => [
             'allowClear' => true,
         ],
     ]); ?>
 
-    <?= $form->field($model, 'amount_start')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'amount_start')->textInput([
+        'maxlength' => true,
+        'value' => 50
+    ]) ?>
 
-    <?= $form->field($model, 'amount_end')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'amount_end')->textInput([
+        'maxlength' => true,
+        'value' => 200
+    ]) ?>
 
     <?= $form->field($model, 't_start')->widget(\kartik\widgets\DateTimePicker::className(), [
         'pluginOptions' => [
@@ -65,6 +80,9 @@ use common\models\Game;
     ]); ?>
 
     <?= $form->field($model, 'deviation_from_amount_end')->widget(\kartik\widgets\TouchSpin::className(), [
+        'options' => [
+            'value' => 1
+        ],
         'pluginOptions' => [
             'verticalbuttons' => true,
             'min' => 0,
@@ -87,6 +105,9 @@ use common\models\Game;
     ]);?>
 
     <?= $form->field($model, 't_next_start_game')->widget(\kartik\widgets\TouchSpin::className(), [
+        'options' => [
+            'value' => 5
+        ],
         'pluginOptions' => [
             'verticalbuttons' => true,
             'min' => 0,
@@ -94,9 +115,15 @@ use common\models\Game;
         ]
     ]); ?>
 
-    <?= $form->field($model, 'rates')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'rates')->textInput([
+        'value' => '1, 5, 10, 15, 17',
+        'maxlength' => true
+    ]) ?>
 
     <?= $form->field($model, 'number_rates')->widget(\kartik\widgets\TouchSpin::className(), [
+        'options' => [
+            'value' => 2
+        ],
         'pluginOptions' => [
             'verticalbuttons' => true,
             'min' => 1,
@@ -105,6 +132,9 @@ use common\models\Game;
     ]); ?>
 
     <?= $form->field($model, 'rate_coef')->widget(\kartik\widgets\TouchSpin::className(), [
+        'options' => [
+            'value' => 1.2
+        ],
         'pluginOptions' => [
             'verticalbuttons' => true,
             'min' => 0.1,
@@ -114,6 +144,9 @@ use common\models\Game;
     ]); ?>
 
     <?= $form->field($model, 'probability_play')->widget(\kartik\widgets\TouchSpin::className(), [
+        'options' => [
+            'value' => 0.7
+        ],
         'pluginOptions' => [
             'verticalbuttons' => true,
             'min' => 0,
@@ -122,7 +155,9 @@ use common\models\Game;
         ]
     ]); ?>
 
-    <?= $form->field($model, 'use_fake_coefs')->checkbox(); ?>
+    <?= $form->field($model, 'use_fake_coefs')->checkbox([
+        'value' => true
+    ]); ?>
 
 </div>
 

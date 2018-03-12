@@ -37,6 +37,31 @@ return [
             'class' => 'backend\components\DbManager',
             'cache' => 'cache'
         ],
+        'amqp' => [
+            'class' => 'freimaurerei\yii2\amqp\AMQP',
+            'config' => [
+                'exchanges' => [
+                    'algorithmExchange' => [
+                        'config' => [
+                            'flags' => \AMQP_DURABLE,
+                            'type'  => \AMQP_EX_TYPE_DIRECT,
+                        ]
+                    ],
+                ],
+                'queues' => [
+                    'console\controllers\AlgorithmQueueController::actionRun' => [
+                        'binds' => [
+                            'algorithmExchange' => [
+                                'run',
+                            ],
+                        ],
+                        'config' => [
+                            'flags' => \AMQP_DURABLE,
+                        ]
+                    ],
+                ],
+            ],
+        ],
     ],
     // set target language to be Russian
     'language' => 'ru',
